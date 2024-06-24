@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div>Nom : {{ sortie.nom }}</div>
+    <div>Date et heure de début de l'événement : {{ sortie.dateHeureDebut | date("Y-d-m") }}</div>
+    <div>Date limite des inscriptions : {{ sortie.dateLimiteInscription | date("Y-d-m") }}</div>
+    <div>Inscriptions Max : {{ sortie.nbInscriptionMax }}</div>
+    <div>Infos sortie : {{ sortie.infosSortie }}</div>
+    <div>Etat : {{ sortie.etat }}</div>
+    <div>
+        <div><a href="{{ path('sortie_delete',{'id':sortie.id}) }}">Supprimer l'événement</a></div>
+        <div><a href="{{ path('sortie_update',{'id':sortie.id}) }}">Modifier l'événement</a></div>
+    </div>
+{% endblock %}
+

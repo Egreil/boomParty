@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{%  block body %}
+    {% for sortie in sorties %}
+        <div>{{ sortie.nom }}</div>
+        <div>{{ sortie.dateHeureDebut | date('Y-d-m') }}</div>
+        <div>{{ sortie.etat }} </div>
+    {% else %}
+        <div> Nos étudiants sont très studieux, ajouter un peu de fun?!</div>
+        <div><a href="{{ path('sortie_create') }}">Ajouter une sortie</a> </div>
+    {% endfor %}
+{% endblock %}
