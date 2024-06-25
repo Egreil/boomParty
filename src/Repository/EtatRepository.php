@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Controller\Entity\Etat;
+use App\Entity\Etat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

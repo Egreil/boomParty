@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Controller\Entity\Sortie;
+use App\Entity\Sortie;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;

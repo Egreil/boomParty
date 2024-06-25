@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Controller\Entity\Participant;
+use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;

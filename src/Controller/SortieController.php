@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Controller\Entity\Sortie;
+use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
