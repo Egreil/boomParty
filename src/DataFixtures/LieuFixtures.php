@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Lieu;
+use App\Entity\Participant;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -20,6 +21,7 @@ class LieuFixtures extends Fixture
         $this->creerLieux($manager);
 
     }
+
 
     public function creerLieux(ObjectManager $manager){
         for ($i = 0; $i < 20; $i++) {
