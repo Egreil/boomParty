@@ -15,7 +15,7 @@
 </head>
 <body class="container">
     <header>
-        <h1><a href="{{ path('home') }}"><img src="{{ asset('images/Boomparty.png') }}" alt="BoomParty"></a></h1>
+        <h1><a href="{{ path('sortie_list') }}"><img src="{{ asset('images/Boomparty.png') }}" alt="BoomParty"></a></h1>
         {% include 'menu/nav.html.twig' %}
         {% for label, messages in app.flashes %}
             {% for message in messages %}

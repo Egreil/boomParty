@@ -9,13 +9,15 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use function Symfony\Component\Clock\now;
 
 class LieuFixtures extends Fixture
 {
     private readonly Generator $faker;
 
-    public function __construct(){
+    public function __construct(private readonly UserPasswordHasherInterface $userPasswordHasher){
+
         $this->faker = Factory::create('fr_FR');
     }
     public function load(ObjectManager $manager): void
@@ -44,12 +46,18 @@ class LieuFixtures extends Fixture
     }
     public function creerParticipants(ObjectManager $manager){
         $participants = new Participant();
+
         $participants->setNom("admin");
         $participants->setPrenom("admin");
         $participants->setEmail("admin@gmail.com");
         $participants->setTelephone("0123456789");
         $participants->setPseudo("admin");
-        $participants->setPassword("admin");
+        $participants->setPassword(
+            $this->userPasswordHasher->hashPassword(
+                $participants,
+                'admin'
+            )
+        );
         $participants->setRoles(["ROLE_ADMIN"]);
         $participants->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')));
         $participants->setActif(true)
@@ -65,7 +73,12 @@ class LieuFixtures extends Fixture
                 ->setEmail("user".$i."@gmail.com")
                 ->setTelephone("0123456789")
                 ->setPseudo("user".$i)
-                ->setPassword("user")
+                ->setPassword(
+                    $this->userPasswordHasher->hashPassword(
+                        $participants,
+                        'user'
+                    )
+                )
                 ->setRoles(["ROLE_USER"])
                 ->setActif($this->faker->boolean(80))
                 ->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')))
