@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Entity;
+namespace App\Entity;
 
 use App\Repository\EtatRepository;
 use Doctrine\ORM\Mapping as ORM;

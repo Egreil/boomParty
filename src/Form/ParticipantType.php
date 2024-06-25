@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
-use App\Controller\Entity\Participant;
-use App\Controller\Entity\Sortie;
+use App\Entity\Participant;
+use App\Entity\Sortie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
