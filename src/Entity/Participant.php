@@ -12,18 +12,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ParticipantRepository")
- * @ORM\Table(
- *     name="participant",
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="UNIQ_IDENTIFIER_EMAIL", fields={"email"}),
- *         @ORM\UniqueConstraint(name="UNIQ_IDENTIFIER_PSEUDO", fields={"PSEUDO"})
- *     }
- * )
- */
-
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['pseudo'], message: 'There is already an account with this pseudo')]
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
@@ -73,12 +61,16 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $idSortie;
 
-    #[ORM\Column]
-    private ?bool $actif = null;
+    #[ORM\ManyToOne(inversedBy: 'idCampus')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
+
 
     public function __construct()
     {
         $this->idSortie = new ArrayCollection();
+
     }
 
 
@@ -268,6 +260,16 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
 
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
 
 }
