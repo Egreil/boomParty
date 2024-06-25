@@ -2,7 +2,7 @@
 
 namespace App\LieuService;
 
-use App\Entity\Lieu;
+use App\Controller\Entity\Lieu;
 use Doctrine\ORM\EntityManagerInterface;
 
 class LieuService

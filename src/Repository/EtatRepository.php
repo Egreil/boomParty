@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Controller\Entity\Ville;
+use App\Controller\Entity\Etat;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Ville>
+ * @extends ServiceEntityRepository<Etat>
  */
-class VilleRepository extends ServiceEntityRepository
+class EtatRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Ville::class);
+        parent::__construct($registry, Etat::class);
     }
 
 //    /**
-//     * @return Ville[] Returns an array of Ville objects
+//     * @return Etat[] Returns an array of Etat objects
 //     */
 //    public function findByExampleField($value): array
 //    {
-//        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
+//        return $this->createQueryBuilder('e')
+//            ->andWhere('e.exampleField = :val')
 //            ->setParameter('val', $value)
-//            ->orderBy('v.id', 'ASC')
+//            ->orderBy('e.id', 'ASC')
 //            ->setMaxResults(10)
 //            ->getQuery()
 //            ->getResult()
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Ville
+//    public function findOneBySomeField($value): ?Etat
 //    {
-//        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
+//        return $this->createQueryBuilder('e')
+//            ->andWhere('e.exampleField = :val')
 //            ->setParameter('val', $value)
 //            ->getQuery()
 //            ->getOneOrNullResult()

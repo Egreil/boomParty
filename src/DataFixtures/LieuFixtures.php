@@ -8,18 +8,19 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use function Symfony\Component\Clock\now;
 
 class LieuFixtures extends Fixture
 {
-    private Generator $faker;
+    private readonly Generator $faker;
 
     public function __construct(){
-        $faker = Factory::create('fr_FR');
+        $this->faker = Factory::create('fr_FR');
     }
     public function load(ObjectManager $manager): void
     {
         $this->creerLieux($manager);
-
+        $this->creerParticipants($manager);
     }
 
 
@@ -39,5 +40,31 @@ class LieuFixtures extends Fixture
 
         $manager->flush();
     }
+    public function creerParticipants(ObjectManager $manager){
+        $participants = new Participant();
+        $participants->setNom("admin");
+        $participants->setPrenom("admin");
+        $participants->setEmail("admin@gmail.com");
+        $participants->setTelephone("0123456789");
+        $participants->setPseudo("admin");
+        $participants->setPassword("admin");
+        $participants->setRoles(["ROLE_ADMIN"]);
+        $participants->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')));
+        $manager->persist($participants);
 
+        for($i = 0; $i < 100; $i++){
+            $participants = new Participant();
+            $participants->setNom("user".$i)
+                ->setPrenom("user".$i)
+                ->setEmail("user".$i."@gmail.com")
+                ->setTelephone("0123456789")
+                ->setPseudo("user".$i)
+                ->setPassword("user")
+                ->setRoles(["ROLE_USER"])
+                ->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')));;
+            $manager->persist($participants);
+        }
+
+        $manager->flush();
+    }
 }
