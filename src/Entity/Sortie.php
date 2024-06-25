@@ -16,8 +16,6 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idSortie = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -52,6 +50,10 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sortie')]
     private Collection $participants;
 
+    #[ORM\ManyToOne(inversedBy: 'sortiesOrganisees')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Participant $organisateur = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -69,17 +71,6 @@ class Sortie
         return $this->id;
     }
 
-    public function getIdSortie(): ?int
-    {
-        return $this->idSortie;
-    }
-
-    public function setIdSortie(int $idSortie): static
-    {
-        $this->idSortie = $idSortie;
-
-        return $this;
-    }
 
     public function getNom(): ?string
     {
@@ -212,6 +203,18 @@ class Sortie
         if ($this->participants->removeElement($participant)) {
             $participant->removeSortie($this);
         }
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Participant
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Participant $organisateur): static
+    {
+        $this->organisateur = $organisateur;
 
         return $this;
     }
