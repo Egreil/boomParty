@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -18,9 +19,10 @@ class LieuFixtures extends Fixture
         $this->faker = Factory::create('fr_FR');
     }
     public function load(ObjectManager $manager): void
-    {
+    {   $this->creerCampus($manager);
         $this->creerLieux($manager);
         $this->creerParticipants($manager);
+
     }
 
 
@@ -50,6 +52,10 @@ class LieuFixtures extends Fixture
         $participants->setPassword("admin");
         $participants->setRoles(["ROLE_ADMIN"]);
         $participants->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')));
+        $participants->setActif(true)
+        ->setCampus($this->faker->randomElement(
+            $manager->getRepository(campus::class)->findAll()
+        ));
         $manager->persist($participants);
 
         for($i = 0; $i < 100; $i++){
@@ -61,10 +67,28 @@ class LieuFixtures extends Fixture
                 ->setPseudo("user".$i)
                 ->setPassword("user")
                 ->setRoles(["ROLE_USER"])
-                ->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')));;
+                ->setActif($this->faker->boolean(80))
+                ->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')))
+                ->setCampus($this->faker->randomElement(
+                    $manager->getRepository(campus::class)->findAll()
+                ));
             $manager->persist($participants);
         }
 
         $manager->flush();
     }
+
+    private function creerCampus(ObjectManager $manager)
+    {
+        $villes=['Rennes','Niort','Nantes','Quimper'];
+        foreach ($villes as $ville) {
+            $campus=new Campus();
+            $campus->setNom($ville);
+            $manager->persist($campus);
+
+        }
+        $manager->flush();
+    }
+
+
 }
