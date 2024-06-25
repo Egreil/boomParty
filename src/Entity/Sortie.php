@@ -37,19 +37,32 @@ class Sortie
     #[ORM\Column(type: Types::TEXT)]
     private ?string $infosSortie = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $etat = null;
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    private ?Campus $campus = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    private ?Lieu $lieu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    private ?Etat $etat = null;
 
     /**
      * @var Collection<int, Participant>
      */
-    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'idSortie')]
+    #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sortie')]
     private Collection $participants;
 
     public function __construct()
     {
         $this->participants = new ArrayCollection();
     }
+
+
+
+
+
+
+
 
     public function getId(): ?int
     {
@@ -140,12 +153,36 @@ class Sortie
         return $this;
     }
 
-    public function getEtat(): ?string
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): static
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getEtat(): ?Etat
     {
         return $this->etat;
     }
 
-    public function setEtat(string $etat): static
+    public function setEtat(?Etat $etat): static
     {
         $this->etat = $etat;
 
@@ -164,7 +201,7 @@ class Sortie
     {
         if (!$this->participants->contains($participant)) {
             $this->participants->add($participant);
-            $participant->addIdSortie($this);
+            $participant->addSortie($this);
         }
 
         return $this;
@@ -173,9 +210,14 @@ class Sortie
     public function removeParticipant(Participant $participant): static
     {
         if ($this->participants->removeElement($participant)) {
-            $participant->removeIdSortie($this);
+            $participant->removeSortie($this);
         }
 
         return $this;
     }
+
+
+
+
+
 }

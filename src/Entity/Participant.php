@@ -67,19 +67,21 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModification = null;
 
-    /**
-     * @var Collection<int, Sortie>
-     */
-    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
-    private Collection $idSortie;
 
     #[ORM\Column]
     private ?bool $actif = null;
 
+    /**
+     * @var Collection<int, Sortie>
+     */
+    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
+    private Collection $sortie;
+
     public function __construct()
     {
-        $this->idSortie = new ArrayCollection();
+        $this->sortie = new ArrayCollection();
     }
+
 
 
 
@@ -232,29 +234,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Sortie>
-     */
-    public function getIdSortie(): Collection
-    {
-        return $this->idSortie;
-    }
 
-    public function addIdSortie(Sortie $idSortie): static
-    {
-        if (!$this->idSortie->contains($idSortie)) {
-            $this->idSortie->add($idSortie);
-        }
 
-        return $this;
-    }
-
-    public function removeIdSortie(Sortie $idSortie): static
-    {
-        $this->idSortie->removeElement($idSortie);
-
-        return $this;
-    }
 
     public function isActif(): ?bool
     {
@@ -264,6 +245,30 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setActif(bool $actif): static
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortie(): Collection
+    {
+        return $this->sortie;
+    }
+
+    public function addSortie(Sortie $sortie): static
+    {
+        if (!$this->sortie->contains($sortie)) {
+            $this->sortie->add($sortie);
+        }
+
+        return $this;
+    }
+
+    public function removeSortie(Sortie $sortie): static
+    {
+        $this->sortie->removeElement($sortie);
 
         return $this;
     }
