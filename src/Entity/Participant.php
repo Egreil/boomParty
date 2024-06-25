@@ -13,16 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ParticipantRepository")
- * @ORM\Table(
- *     name="participant",
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="UNIQ_IDENTIFIER_EMAIL", fields={"email"}),
- *         @ORM\UniqueConstraint(name="UNIQ_IDENTIFIER_PSEUDO", fields={"PSEUDO"})
- *     }
- * )
- */
+
 
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['pseudo'], message: 'There is already an account with this pseudo')]
@@ -67,21 +58,23 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModification = null;
 
-
-    #[ORM\Column]
-    private ?bool $actif = null;
-
     /**
      * @var Collection<int, Sortie>
      */
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $sortie;
 
+    #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
+    #[ORM\Column]
+    private ?bool $actif = null;
+
     public function __construct()
     {
-        $this->sortie = new ArrayCollection();
+        $this->idSortie = new ArrayCollection();
     }
-
 
 
 
@@ -237,6 +230,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
 
 
+
     public function isActif(): ?bool
     {
         return $this->actif;
@@ -273,6 +267,16 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
 
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
 
 }
