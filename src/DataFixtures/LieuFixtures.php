@@ -23,6 +23,7 @@ class LieuFixtures extends Fixture
         $this->creerParticipants($manager);
     }
 
+
     public function creerLieux(ObjectManager $manager){
         for ($i = 0; $i < 20; $i++) {
 
