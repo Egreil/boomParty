@@ -3,28 +3,43 @@
 namespace App\DataFixtures;
 
 use App\Entity\Campus;
+use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Participant;
+use App\Entity\Sortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use function Symfony\Component\Clock\now;
 
 class LieuFixtures extends Fixture
 {
     private readonly Generator $faker;
 
-    public function __construct(){
+    public function __construct(private readonly UserPasswordHasherInterface $userPasswordHasher){
+
         $this->faker = Factory::create('fr_FR');
     }
     public function load(ObjectManager $manager): void
     {   $this->creerCampus($manager);
+        $this->creerEtat($manager);
         $this->creerLieux($manager);
         $this->creerParticipants($manager);
+        $this->creerSortie($manager);
 
     }
-
+    private function creerEtat(ObjectManager $manager)
+    {
+        $etatsPossibles=['Crée','Ouverte','Cloturée','Activité en cours','Passée','Annulée'];
+        foreach ($etatsPossibles as $etat) {
+            $etatObjet=new etat();
+            $etatObjet->setLibelle($etat);
+            $manager->persist($etatObjet);
+        }
+        $manager->flush();
+    }
 
     public function creerLieux(ObjectManager $manager){
 
@@ -40,17 +55,22 @@ class LieuFixtures extends Fixture
 
             $manager->persist($lieu);
         }
-
         $manager->flush();
     }
     public function creerParticipants(ObjectManager $manager){
         $participants = new Participant();
+
         $participants->setNom("admin");
         $participants->setPrenom("admin");
         $participants->setEmail("admin@gmail.com");
         $participants->setTelephone("0123456789");
         $participants->setPseudo("admin");
-        $participants->setPassword("admin");
+        $participants->setPassword(
+            $this->userPasswordHasher->hashPassword(
+                $participants,
+                'admin'
+            )
+        );
         $participants->setRoles(["ROLE_ADMIN"]);
         $participants->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')));
         $participants->setActif(true)
@@ -66,7 +86,12 @@ class LieuFixtures extends Fixture
                 ->setEmail("user".$i."@gmail.com")
                 ->setTelephone("0123456789")
                 ->setPseudo("user".$i)
-                ->setPassword("user")
+                ->setPassword(
+                    $this->userPasswordHasher->hashPassword(
+                        $participants,
+                        'user'
+                    )
+                )
                 ->setRoles(["ROLE_USER"])
                 ->setActif($this->faker->boolean(80))
                 ->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')))
@@ -89,6 +114,38 @@ class LieuFixtures extends Fixture
 
         }
         $manager->flush();
+    }
+
+    private function creerSortie(ObjectManager $manager)
+    {
+        for ($i=0;$i<20;$i++) {
+        $sortie=new Sortie();
+            $sortie->setNom($this->faker->word())
+                ->setNbInscriptionMax($this->faker->randomDigitNotNull())
+                ->setDateLimiteInscription(\DateTime::createFromFormat('d/m/Y', now("+2d")->format('d/m/Y')))
+                ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y', now("+3d")->format('d/m/Y')))
+                ->setDuree(5)
+                ->setInfosSortie($this->faker->paragraph())
+                ->setLieu($this->faker->randomElement(
+                    $manager->getRepository(Lieu::class)->findAll()
+                ))
+                ->setEtat($this->faker->randomElement(
+                    $manager->getRepository(Etat::class)->findAll()
+                ))
+                ->setCampus($this->faker->randomElement(
+                $manager->getRepository(Campus::class)->findAll())
+            )
+                ->setOrganisateur($this->faker->randomElement(
+                $manager->getRepository(Participant::class)->findAll())
+            );
+                 for ($j=0;$j<$sortie->getNbInscriptionMax();$j++){
+                     $sortie->addParticipant($this->faker->randomElement(
+                         $manager->getRepository(Participant::class)->findAll())
+                     );
+                 }
+                $manager->persist($sortie);
+        }
+            $manager->flush();
     }
 
 

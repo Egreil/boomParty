@@ -52,7 +52,8 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sortie')]
     private Collection $participants;
 
-    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\ManyToOne(inversedBy: 'sortiesOrganisees')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Participant $organisateur = null;
 
     public function __construct()
@@ -61,22 +62,17 @@ class Sortie
     }
 
 
+
+
+
+
+
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdSortie(): ?int
-    {
-        return $this->idSortie;
-    }
-
-    public function setIdSortie(int $idSortie): static
-    {
-        $this->idSortie = $idSortie;
-
-        return $this;
-    }
 
     public function getNom(): ?string
     {
