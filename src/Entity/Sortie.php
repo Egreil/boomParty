@@ -52,16 +52,13 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sortie')]
     private Collection $participants;
 
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    private ?Participant $organisateur = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
     }
-
-
-
-
-
-
 
 
     public function getId(): ?int
@@ -212,6 +209,18 @@ class Sortie
         if ($this->participants->removeElement($participant)) {
             $participant->removeSortie($this);
         }
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Participant
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Participant $organisateur): static
+    {
+        $this->organisateur = $organisateur;
 
         return $this;
     }
