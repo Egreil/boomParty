@@ -39,7 +39,6 @@ class LieuFixtures extends Fixture
 
         $manager->flush();
     }
-
     public function creerParticipants(ObjectManager $manager){
         $participants = new Participant();
         $participants->setNom("admin");
@@ -55,11 +54,11 @@ class LieuFixtures extends Fixture
         for($i = 0; $i < 100; $i++){
             $participants = new Participant();
             $participants->setNom("user".$i)
-            ->setPrenom("user".$i)
-            ->setEmail("user".$i."@gmail.com")
-            ->setTelephone("0123456789")
-            ->setPseudo("user".$i)
-            ->setPassword("user")
+                ->setPrenom("user".$i)
+                ->setEmail("user".$i."@gmail.com")
+                ->setTelephone("0123456789")
+                ->setPseudo("user".$i)
+                ->setPassword("user")
                 ->setRoles(["ROLE_USER"])
                 ->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')));;
             $manager->persist($participants);
