@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\Lieu;
+use App\Controller\Entity\Lieu;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
