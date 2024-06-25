@@ -12,6 +12,9 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
+
+
+
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['pseudo'], message: 'There is already an account with this pseudo')]
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
@@ -59,22 +62,26 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Sortie>
      */
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
-    private Collection $idSortie;
+    private Collection $sortie;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
 
+    #[ORM\Column]
+    private ?bool $actif = null;
 
+    /**
+     * @var Collection<int, sortie>
+     */
+    #[ORM\OneToMany(targetEntity: sortie::class, mappedBy: 'organisateur', orphanRemoval: true)]
+    private Collection $sortiesOrganisees;
 
     public function __construct()
     {
-        $this->idSortie = new ArrayCollection();
-
+        $this->sortie = new ArrayCollection();
+        $this->sortiesOrganisees = new ArrayCollection();
     }
-
-
-
 
 
     public function getId(): ?int
@@ -224,29 +231,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Sortie>
-     */
-    public function getIdSortie(): Collection
-    {
-        return $this->idSortie;
-    }
 
-    public function addIdSortie(Sortie $idSortie): static
-    {
-        if (!$this->idSortie->contains($idSortie)) {
-            $this->idSortie->add($idSortie);
-        }
 
-        return $this;
-    }
 
-    public function removeIdSortie(Sortie $idSortie): static
-    {
-        $this->idSortie->removeElement($idSortie);
-
-        return $this;
-    }
 
     public function isActif(): ?bool
     {
@@ -260,6 +247,30 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortie(): Collection
+    {
+        return $this->sortie;
+    }
+
+    public function addSortie(Sortie $sortie): static
+    {
+        if (!$this->sortie->contains($sortie)) {
+            $this->sortie->add($sortie);
+        }
+
+        return $this;
+    }
+
+    public function removeSortie(Sortie $sortie): static
+    {
+        $this->sortie->removeElement($sortie);
+
+        return $this;
+    }
+
     public function getCampus(): ?Campus
     {
         return $this->campus;
@@ -268,6 +279,36 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCampus(?Campus $campus): static
     {
         $this->campus = $campus;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, sortie>
+     */
+    public function getSortiesOrganisees(): Collection
+    {
+        return $this->sortiesOrganisees;
+    }
+
+    public function addSortiesOrganisees(sortie $sortiesOrganisees): static
+    {
+        if (!$this->sortiesOrganisees->contains($sortiesOrganisees)) {
+            $this->sortiesOrganisees->add($sortiesOrganisees);
+            $sortiesOrganisees->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortiesOrganisees(sortie $sortiesOrganisees): static
+    {
+        if ($this->sortiesOrganisees->removeElement($sortiesOrganisees)) {
+            // set the owning side to null (unless already changed)
+            if ($sortiesOrganisees->getOrganisateur() === $this) {
+                $sortiesOrganisees->setOrganisateur(null);
+            }
+        }
 
         return $this;
     }
