@@ -21,6 +21,19 @@ class SortieRepository extends ServiceEntityRepository
         return $this->findAll();
     }
 
+
+//    public function findSortiesByCityAndPlace(int $villeId, int $lieuId): array
+//    {
+//        return $this->createQueryBuilder('s')
+//            ->andWhere('s.lieu = :lieuId')
+//            ->setParameter('lieuId', $lieuId)
+//            ->leftJoin('s.lieu', 'lieu')
+//            ->andWhere('lieu.ville = :villeId')
+//            ->setParameter('villeId', $villeId)
+//            ->leftJoin('lieu.ville', 'ville')
+//            ->getQuery()
+//            ->getResult();
+//    }
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
 //     */

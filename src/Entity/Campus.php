@@ -36,13 +36,6 @@ class Campus
     #[ORM\OneToMany(targetEntity: Participant::class, mappedBy: 'campus')]
     private Collection $participants;
 
-    public function __construct()
-    {
-        $this->participants = new ArrayCollection();
-    }
-
-
-
     public function getId(): ?int
     {
         return $this->id;

@@ -16,8 +16,6 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idSortie = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -190,6 +188,12 @@ class Sortie
         return $this->participants;
     }
 
+    public function setParticipants(Collection $participants): void
+    {
+        $this->participants = $participants;
+    }
+
+
     public function addParticipant(Participant $participant): static
     {
         if (!$this->participants->contains($participant)) {
@@ -200,7 +204,7 @@ class Sortie
         return $this;
     }
 
-    public function removeParticipant(Participant $participant): static
+    public function removeParticipant(Participsant $participant): static
     {
         if ($this->participants->removeElement($participant)) {
             $participant->removeSortie($this);
