@@ -11,20 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
+
 #[Route('/participant', name: 'participant_')]
 class ParticipantController extends AbstractController
 {
-    #[Route('/list',name:'list')]
-    public function list(ParticipantRepository $participantRepository, Request $request){
-
-        $participants = $participantRepository->findAll($request);
-        return $this->render('Participant/list.html.twig',[
-                'participants'=>$participants
-            ]);
-
-
-    }
-
     #[Route('/details', name: 'details_personnel')]
     #[Route('/details/{id}', name: 'details',requirements: ['id' => '\d+'])]
     public function afficher(

@@ -1,16 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Profil de :{% endblock %}
+{% block title %}Détail des participants {% endblock %}
 
+
+{#sur boostrap non tailwind css#}
 {% block body %}
-    <link rel="stylesheet" href="profil.css">
-    <h2>Profil de :</h2>
+    <div class="container py-4">
+        <div class="bg-white shadow rounded p-4">
+            <h1 class="h3 mb-4">Details</h1>
 
-    <div>{{ participant.nom }}</div>
-    <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png">
-    <div>{{ participant.prenom }}</div>
-    <div>{{ participant.pseudo }}</div>
-    <div>{{ participant.email }}</div>
-    <div>{{ participant.telephone }}</div>
-    <div>{{ participant.campus.nom }}</div>
+            <div class="row mb-4">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <label class="form-label">Nom:</label>
+                    <div class="text-body">{{ participant.nom }}</div>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <label class="form-label">Prénom:</label>
+                    <div class="text-body">{{ participant.prenom }}</div>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <label class="form-label">Email:</label>
+                    <div class="text-body">{{ participant.email }}</div>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <label class="form-label">Téléphone:</label>
+                    <div class="text-body">{{ participant.telephone ?: 'N/A' }}</div>
+                </div>
+
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <label class="form-label">Pseudo:</label>
+                    <div class="text-body">{{ participant.pseudo }}</div>
+                </div>
+
+                <div class="col-12 mb-3 mb-md-0">
+                    <label class="form-label">Date de Création:</label>
+                    <div class="text-body">{{ participant.dateCreation ? participant.dateCreation|date('Y-m-d H:i:s') : 'N/A' }}</div>
+                </div>
+
+                <div class="col-12 mb-3 mb-md-0">
+                    <label class="form-label">Date de Modification:</label>
+                    <div class="text-body">{{ participant.dateModification ? participant.dateModification|date('Y-m-d H:i:s') : 'N/A' }}</div>
+                </div>
+
+                <div class="col-12 mb-3 mb-md-0">
+                    <label class="form-label">Campus:</label>
+                    <div class="text-body">{{ participant.campus.nom }}</div>
+                </div>
+
+                <div class="col-12 mb-3 mb-md-0">
+                    <label class="form-label">Actif:</label>
+                    <div class="text-body">{{ participant.actif ? 'Oui' : 'Non' }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

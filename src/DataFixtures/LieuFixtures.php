@@ -42,6 +42,7 @@ class LieuFixtures extends Fixture
     }
 
     public function creerLieux(ObjectManager $manager){
+
         for ($i = 0; $i < 20; $i++) {
 
             $lieu = new Lieu();

@@ -82,11 +82,22 @@ class SortieController extends AbstractController
     SortieRepository $sortieRepository,
     int $id=null,
     ){
-        if($id){
-            $sortie=$sortieRepository->find($id);
+        if($id) {
+            $sortie = $sortieRepository->find($id);
         }
+
+//        if(!$sortie) {
+//            throw $this->createNotFoundException('Sortie inexistante');
+//        }
+        // fonction que j'ai créer pour recuperer le codePostal depuis le repo
+//            $sortiePlace=$sortie->findSortiesByCityAndPlace(
+//                $sortie->getLieu()->getVille()->getId(),
+//                $sortie->getLieu()->getId()
+//            );
+
         return $this->render('sortie/details.html.twig',[
-            'sortie'=>$sortie
+            'sortie'=>$sortie,
+//            'sortiePlace'=>$sortiePlace,
         ]);
     }
 }
