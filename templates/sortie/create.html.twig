@@ -1,11 +1,76 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Creation d'une nouvelle sortie{% endblock %}
-
 {% block body %}
-    <div>
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Créer une sortie</h1>
         {{ form_start(form) }}
-        {{ form_widget(form) }}
-        {{ form_errors(form) }}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <strong>{{ form_label(form.nom) }}</strong>
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.dateHeureDebut) }}</strong>
+                    {{ form_widget(form.dateHeureDebut, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.dateLimiteInscription) }}</strong>
+                    {{ form_widget(form.dateLimiteInscription, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.nbInscriptionMax) }}</strong>
+                    {{ form_widget(form.nbInscriptionMax, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.duree) }}</strong>
+                    {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }} minutes
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.infosSortie) }}</strong>
+                    {{ form_widget(form.infosSortie, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <strong>{{ form_label(form.campus) }}</strong>
+                    {{ form_widget(form.campus, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.ville) }}</strong>
+                    {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.lieu) }}</strong>
+                    {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.lieuRue) }}</strong>
+                    {{ form_widget(form.lieuRue, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.villeCodePostal) }}</strong>
+                    {{ form_widget(form.villeCodePostal, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.lieuLatitude) }}</strong>
+                    {{ form_widget(form.lieuLatitude, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="mb-3">
+                    <strong>{{ form_label(form.lieuLongitude) }}</strong>
+                    {{ form_widget(form.lieuLongitude, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 d-flex justify-content-center">
+                {{ form_widget(form.enregistrer, {'attr': {'class': 'btn btn-primary mt-3 me-2'}}) }}
+                {{ form_widget(form.publier, {'attr': {'class': 'btn btn-success mt-3 me-2'}}) }}
+                {{ form_widget(form.annuler, {'attr': {'class': 'btn btn-danger mt-3'}}) }}
+            </div>
+        </div>
+
+        {{ form_end(form) }}
     </div>
 {% endblock %}

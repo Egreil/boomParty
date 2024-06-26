@@ -14,30 +14,35 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
 {
-    #[Route('/update/{id}', name:'update',requirements: ['id'=> '\d+'])]
-    #[Route('/create', name:'create')]
+    #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'])]
+    #[Route('/create', name: 'create')]
     public function createSortie(
-        Request $request,
+        Request                $request,
         EntityManagerInterface $entityManager,
-        int $id=null,
-        SortieRepository $sortieRepository
+        int                    $id = null,
+        SortieRepository       $sortieRepository
     ): Response
     {
 
-        if($id){
-            $sortie=$sortieRepository->find($id);
+        if ($id) {
+            $sortie = $sortieRepository->find($id);
+        } else {
+            $sortie = new Sortie();
         }
-        else{
-            $sortie=new Sortie();
-        }
-        $sortieForm=$this->createForm(SortieType::class,$sortie);
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-        if($sortieForm->isSubmitted() && $sortieForm->isValid()){
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+
+            $sortie->setDateHeureDebut(new \DateTime());
+            $sortie->setDateLimiteInscription(new \DateTime());
+
+//            dd($sortie);
             $entityManager->persist($sortie);
             $entityManager->flush();
-            return $this->redirectToRoute('sortie_details',[
-                'id'=>$sortie->getId()
+
+            return $this->redirectToRoute('sortie_details', [
+                'id' => $sortie->getId()
             ]);
         }
 
@@ -46,31 +51,33 @@ class SortieController extends AbstractController
             'form' => $sortieForm,
         ]);
     }
-    #[Route('/list',name:'list')]
-    #[Route('/',name:'')]
+
+    #[Route('/list', name: 'list')]
+    #[Route('/', name: '')]
     public function listSorties(
         SortieRepository $sortieRepository,
-        Request $request,
-    ){
-        $sorties=$sortieRepository->findSorties($request);
+        Request          $request,
+    )
+    {
+        $sorties = $sortieRepository->findSorties($request);
 
-        return $this->render('sortie/list.html.twig',[
-            'sorties'=>$sorties
-        ]
+        return $this->render('sortie/list.html.twig', [
+                'sorties' => $sorties
+            ]
 
         );
     }
 
 
-    #[Route('/delete/{id}', name:'delete',requirements: ['id'=> '\d+'])]
+    #[Route('/delete/{id}', name: 'delete', requirements: ['id' => '\d+'])]
     public function deleteSortie(
         EntityManagerInterface $entityManager,
-        int $id=null,
-        SortieRepository $sortieRepository
+        int                    $id = null,
+        SortieRepository       $sortieRepository
     ): Response
     {
-        if($id){
-            $sortie=$sortieRepository->find($id);
+        if ($id) {
+            $sortie = $sortieRepository->find($id);
         }
         $entityManager->remove($sortie);
         $entityManager->flush();
@@ -79,8 +86,8 @@ class SortieController extends AbstractController
     }
     #[Route('/details/{id}', name:'details',requirements: ['id'=> '\d+'])]
     public function detailSortie(
-    SortieRepository $sortieRepository,
-    int $id=null,
+        SortieRepository $sortieRepository,
+        int $id=null,
     ){
         if(!$id) {
             throw $this->createNotFoundException('Identifiants introuvable');
@@ -88,11 +95,13 @@ class SortieController extends AbstractController
         $sortie = $sortieRepository->find($id);
 
         if(!$sortie) {
-            throw $this->createNotFoundException('Sortie inexistante');
+            throw $this->createNotFoundException('Cet événement n\'existe pas :(' );
         }
 
         $sortiesWithPostalCode =$sortieRepository->findSortiesByCityAndPlace();
- return $this->render('sortie/details.html.twig',[
+//
+//        dd($sortie);
+        return $this->render('sortie/details.html.twig',[
             'sortie'=>$sortie,
             'sortiesWithPostalCode'=>$sortiesWithPostalCode,
         ]);
