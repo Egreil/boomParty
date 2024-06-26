@@ -92,7 +92,6 @@ class SortieController extends AbstractController
         }
 
         $sortiesWithPostalCode =$sortieRepository->findSortiesByCityAndPlace();
-dd($sortiesWithPostalCode);
  return $this->render('sortie/details.html.twig',[
             'sortie'=>$sortie,
             'sortiesWithPostalCode'=>$sortiesWithPostalCode,
