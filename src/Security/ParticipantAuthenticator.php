@@ -49,7 +49,7 @@ class ParticipantAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // For example:
-        return new RedirectResponse($this->urlGenerator->generate('participant_list'));
+        return new RedirectResponse($this->urlGenerator->generate('sortie_list'));
     }
 
     protected function getLoginUrl(Request $request): string
