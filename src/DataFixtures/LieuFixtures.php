@@ -7,6 +7,7 @@ use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Entity\Ville;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -25,9 +26,11 @@ class LieuFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {   $this->creerCampus($manager);
         $this->creerEtat($manager);
+        $this->creerVille($manager);
         $this->creerLieux($manager);
         $this->creerParticipants($manager);
         $this->creerSortie($manager);
+
 
     }
     private function creerEtat(ObjectManager $manager)
@@ -51,11 +54,26 @@ class LieuFixtures extends Fixture
             $lieu->setNom($this->faker->name);
             $lieu->setRue($this->faker->streetAddress);
             $lieu->setLatitude($this->faker->latitude);
-            $lieu->setLongitude($this->faker->longitude);
-
+            $lieu->setLongitude($this->faker->longitude)
+            ->setVille($this->faker->randomElement(
+                $manager->getRepository(Ville::class)->findAll())
+            );
             $manager->persist($lieu);
         }
         $manager->flush();
+    }
+
+    public function creerVille(ObjectManager $manager){
+
+        for ($i = 0; $i < 20; $i++) {
+            $ville = new Ville();
+            $ville->setCodePostal($this->faker->postcode)
+            ->setNom($this->faker->city);
+
+            $manager->persist($ville);
+        }
+        $manager->flush();
+
     }
     public function creerParticipants(ObjectManager $manager){
         $participants = new Participant();
