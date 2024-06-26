@@ -9,10 +9,12 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Image;
 
 class ParticipantType extends AbstractType
 {
@@ -51,10 +53,17 @@ class ParticipantType extends AbstractType
             ->add('dateModification', null, [
                 'widget' => 'single_text',
             ])
-            ->add('idSortie', EntityType::class, [
-                'class' => Sortie::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+            ->add('image', FileType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new Image(
+                        [
+                            'maxSize' => '10000k',
+                            'mimeTypesMessage' => 'Image format not allowed !',
+                            'maxSizeMessage' => 'The file is too large !'
+                        ]
+                    )
+                ]
             ])
         ;
     }

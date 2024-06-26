@@ -96,7 +96,7 @@ class LieuFixtures extends Fixture
                 ->setActif($this->faker->boolean(80))
                 ->setDateCreation(\DateTime::createFromFormat('d/m/Y', now()->format('d/m/Y')))
                 ->setCampus($this->faker->randomElement(
-                    $manager->getRepository(campus::class)->findAll()
+                    $manager->getRepository(Campus::class)->findAll()
                 ));
             $manager->persist($participants);
         }
