@@ -1,7 +1,9 @@
 <nav>
     <ul>
         <li><a href="{{ path('sortie_list') }}">Accueil</a></li>
-            <li><a href="{{ path('villes_create') }}">Ville</a></li>
-            <li><a href="{{ path('participant_list') }}">Participants</a></li>
+        {% if app.user %}
+            <li><a href="{{ path('sortie_list') }}">Sortie</a></li>
+            <li><a href="{{ path('app_logout') }}">Logout</a></li>
+        {% endif %}
     </ul>
 </nav>

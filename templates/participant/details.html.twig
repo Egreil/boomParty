@@ -1,20 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ParticipantController!{% endblock %}
+{% block title %}Profil de :{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <link rel="stylesheet" href="profil.css">
+    <h2>Profil de :</h2>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/wamp64/www/boomParty/src/Controller/ParticipantController.php</code></li>
-        <li>Your template at <code>D:/wamp64/www/boomParty/templates/participant/index.html.twig</code></li>
-    </ul>
-</div>
+    <div>{{ participant.nom }}</div>
+    <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png">
+    <div>{{ participant.prenom }}</div>
+    <div>{{ participant.pseudo }}</div>
+    <div>{{ participant.email }}</div>
+    <div>{{ participant.telephone }}</div>
+    <div>{{ participant.campus.nom }}</div>
 {% endblock %}
