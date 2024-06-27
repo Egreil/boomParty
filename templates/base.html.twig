@@ -14,10 +14,6 @@
 <body>
     <header>
         {% include 'menu/nav.html.twig' %}
-
-        <div class="container mt-2">
-            <img src="{{ asset('images/Boomparty.png') }}" class="rounded-circle logo-img" alt="BoomParty">
-        </div>
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="flash flash-{{ label }}">

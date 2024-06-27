@@ -2,7 +2,17 @@
 
 {%  block body %}
     <div class="container mt-5">
+        <div class="d-flex justify-content-end ">
+            <div>
+
+            </div>
+            <div class="bg-light border">
+                <div><span>Date du jour : {{ "now"|date("d/m/Y") }}</span></div> <!-- Affiche la date du jour -->
+                <div><span>Participant : {{ app.user.nom  }}</span></div> <!-- Affiche le nom de l'utilisateur connecté -->
+            </div>
+        </div>
         <div class="table-responsive table-wrapper">
+            {{ app.user.nom }}
             <table class=" table table-striped table-bordered">
                 <thead class="thead-dark">
                 <tr>
@@ -24,15 +34,41 @@
                     <td>{{ sortie.dateLimiteInscription | date('Y-d-m') }}</td>
                     <td>{{ sortie.participants | length }} /{{ sortie.nbInscriptionMax }}</td>
                     <td>{{ sortie.etat.libelle }}</td>
-                    <td></td>
+                    <td>
+                        {% set userParticipates = false %}
+                        {% for participant in sortie.participants %}
+                            {% if participant.id == app.user.id %}
+                                {% set userParticipates = true %}
+                                X
+                            {% endif %}
+                        {% endfor %}
+                    </td>
                     <td>{{ sortie.organisateur.nom }}</td>
-                    <td></td>
+                    <td>
+                        {% if sortie.organisateur.id == app.user.id %}
+                            <a href="{{ path('sortie_update', {'id': sortie.id}) }}">Modifier</a>
+                            - Publier
+                        {% endif %}
+
+                        {% if userParticipates  %}
+                            <a href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
+                            - Se désiter
+                        {% endif %}
+
+                        {% if userParticipates == false  %}
+                            <a href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
+                            - S'inscrire'
+                        {% endif %}
+
+
+                    </td>
 
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
+        <a class="btn btn-primary mt-3 me-2" href="{{ path('sortie_create') }}">Ajouter une sortie</a>
     </div>
-        <div><a href="{{ path('sortie_create') }}">Ajouter une sortie</a> </div>
+
 {% endblock %}
