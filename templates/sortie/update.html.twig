@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container mt-5">
-        <h1 class="mb-4 text-center">Créer une sortie</h1>
+        <h1 class="mb-4 text-center">Modifier une sortie</h1>
         <br>
         {{ form_start(form) }}
         <div class="row">
@@ -68,7 +68,8 @@
             <div class="col-md-12 d-flex justify-content-center">
                 {{ form_widget(form.enregistrer, {'attr': {'class': 'btn btn-primary mt-3 me-2'}}) }}
                 {{ form_widget(form.publier, {'attr': {'class': 'btn btn-success mt-3 me-2'}}) }}
-                {{ form_widget(form.annuler, {'attr': {'class': 'btn btn-danger mt-3'}}) }}
+                {{ form_widget(form.supprimer, {'attr': {'class': 'btn btn-danger mt-3 me-2'}}) }}
+                {{ form_widget(form.annuler, {'attr': {'class': 'btn btn-secondary mt-3'}}) }}
             </div>
         </div>
 

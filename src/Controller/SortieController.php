@@ -23,9 +23,12 @@ class SortieController extends AbstractController
         SortieRepository       $sortieRepository
     ): Response
     {
-
         if ($id) {
             $sortie = $sortieRepository->find($id);
+
+            if (!$sortie) {
+                throw $this->createNotFoundException('La sortie n\'existe pas !');
+            }
         } else {
             $sortie = new Sortie();
         }
@@ -45,10 +48,10 @@ class SortieController extends AbstractController
                 'id' => $sortie->getId()
             ]);
         }
-
-        return $this->render('sortie/create.html.twig', [
+        $template = $id ? 'sortie/update.html.twig' : 'sortie/create.html.twig';
+        return $this->render($template, [
             'sortie' => $sortie,
-            'form' => $sortieForm,
+            'form' => $sortieForm->createView(),
         ]);
     }
 

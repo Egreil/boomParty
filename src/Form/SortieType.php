@@ -58,6 +58,10 @@ class SortieType extends AbstractType
                 'label' => 'Publier la sortie',
                 'attr' => ['class' => 'btn btn-success mt-3']
             ])
+            ->add('supprimer', SubmitType::class, [
+                'label' => 'Supprimer la sortie',
+                'attr' => ['class' => 'btn btn-success mt-3']
+            ])
             ->add('annuler', SubmitType::class, [
                 'label' => 'Annuler',
                 'attr' => ['class' => 'btn btn-danger mt-3']
