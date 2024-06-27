@@ -17,8 +17,15 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     public function findSorties(){
-        //return $this->createQueryBuilder('s')
-        return $this->findAll();
+        return $this->createQueryBuilder('s')
+            ->select('s', 'campus', 'lieu', 'etat', 'organisateur', 'participants')
+            ->leftJoin('s.campus', 'campus')
+            ->leftJoin('s.lieu', 'lieu')
+            ->leftJoin('s.etat', 'etat')
+            ->leftJoin('s.organisateur', 'organisateur')
+            ->leftJoin('s.participants', 'participants')
+            ->getQuery()
+            ->getResult();
     }
 
 //    public function findByCodePostal(){
