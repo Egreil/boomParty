@@ -1,25 +1,23 @@
 <?php
 
-namespace App\Service;
+namespace App\Scheduler\Handler;
 
 use App\Entity\Etat;
 use App\Entity\Sortie;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Scheduler\Attribute\AsCronTask;
 
 
 /**
  * Service qui est invoqué par le scheduler pour Historiser les sorties.
  */
-use Symfony\Component\Scheduler\Attribute\AsCronTask;
-
-
-#[AsCronTask('*/1 */1 * * *')]
-readonly final class Historiser
+#[AsCronTask('*/1 */1 * * *',timezone:"EUROPE/PARIS")]
+final class Historiser
 {
     public function __construct (private EntityManagerInterface $entityManager) {
 
     }
+
 
     public function __invoke():string {
         $em=$this->entityManager;
@@ -34,6 +32,13 @@ readonly final class Historiser
             $em->persist($sortie);
         }
         $em->flush();
+        $sortiesAHistoriser=$sortieRepository->findSortiesAHistoriser();
+        foreach($sortiesAHistoriser as $sortie) {
+
+            var_dump($sortie->getNom());
+            var_dump($sortie->getEtat()->getLibelle());
+        }
+
         return "ok";
     }
 }
