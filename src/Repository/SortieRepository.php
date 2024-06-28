@@ -6,6 +6,7 @@ use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * @extends ServiceEntityRepository<Sortie>
@@ -15,6 +16,7 @@ class SortieRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Sortie::class);
+        //$this->security->getUser()
     }
 
     public function findSorties(){
@@ -85,6 +87,66 @@ class SortieRepository extends ServiceEntityRepository
 
     }
 
+//    public function findOneBySomeField($value): ?Sortie
+//    {
+//        return $this->createQueryBuilder('s')
+//            ->andWhere('s.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
+    public function findSortiesByFilters($dateDebut,$dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse, $campus,  $nom)
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        if ($dateDebut && $dateFin) {
+            $qb->andWhere('s.dateHeureDebut BETWEEN :dateDebut AND :dateFin')
+                ->setParameter('dateDebut', $dateDebut)
+                ->setParameter('dateFin', $dateFin);
+        } elseif ($dateDebut) {
+            $qb->andWhere('s.dateHeureDebut >= :dateDebut')
+                ->setParameter('dateDebut', $dateDebut);
+        } elseif ($dateFin) {
+            $qb->andWhere('s.dateHeureDebut <= :dateFin')
+                ->setParameter('dateFin', $dateFin);
+        }
+
+        if ($organisateur) {
+            $qb->andWhere('s.organisateur = :user')
+                ->setParameter('user', $user);
+        }
+
+        if ($inscrit) {
+            $qb->andWhere(':user MEMBER OF s.participants')
+                ->setParameter('user', $user);
+        }
+
+        if ($nonInscrit) {
+            $qb->andWhere(':user NOT MEMBER OF s.participants')
+                ->setParameter('user', $user);
+        }
+
+        if ($sortiePasse) {
+            $qb->andWhere('s.dateHeureDebut < :now')
+                ->setParameter('now', new \DateTime());
+        } else {
+            $qb->andWhere('s.dateHeureDebut >= :now')
+                ->setParameter('now', new \DateTime());
+        }
+
+        if ($campus) {
+            $qb->andWhere('s.campus = :campus')
+                ->setParameter('campus', $campus);
+        }
+
+        if ($nom) {
+            $qb->andWhere('s.nom LIKE :nom')
+                ->setParameter('nom', '%'.$nom.'%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
     //TODO faire une requete qui calcule le temps debut + duree
     public function findSortiesCommencees(){
 

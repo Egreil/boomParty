@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Sortie;
+use App\Form\SortieFilterType;
 use App\Form\SortieType;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -85,13 +86,36 @@ class SortieController extends AbstractController
     )
     {
 
-        $sorties = $sortieRepository->findSorties($request);
+        $filtreForm = $this->createForm(SortieFilterType::class);
 
-        //dd($sorties);
+        $filtreForm->handleRequest($request);
+
+        $sorties = [];
+        if($filtreForm->isSubmitted()){
+            // Récupérer les données filtrées
+            $data = $filtreForm->getData();
+            $dateDebut = $data['dateDebut'] ?? null;
+            $dateFin = $data['dateFin'] ?? null;
+            $organisateur = $data['organisateur'] ?? false;
+            $inscrit = $data['inscrit'] ?? false;
+            $nonInscrit = $data['nonInscrit'] ?? false;
+            $sortiePasse = $data['sortiePasse'] ?? false;
+            $campus = $data['Campus'] ?? null;
+            $nom = $data['nom'] ?? '';
+
+            dd($date);
+
+            $sorties = $sortieRepository->findSortiesByFilters($dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse, $campus, $nom, $this->getUser());
+
+        }else {
+            // Si le formulaire n'est pas soumis, affichez toutes les sorties
+            $sorties = $sortieRepository->findSorties($request);
+        }
 
 
         return $this->render('sortie/list.html.twig', [
                 'sorties' => $sorties,
+                'filtreForm' => $filtreForm->createView(),
             ]
 
         );
