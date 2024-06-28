@@ -17,8 +17,6 @@ final class Historiser
     public function __construct (private EntityManagerInterface $entityManager) {
 
     }
-
-
     public function __invoke():string {
         $em=$this->entityManager;
         $sortieRepository=$em->getRepository(Sortie::class);
