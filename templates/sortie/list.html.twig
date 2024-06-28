@@ -51,12 +51,12 @@
                         {% endif %}
 
                         {% if userParticipates  %}
-                            <a href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
+                            <a href="{{ path('sortie_deinscrire', {'id': sortie.id}) }}">Afficher</a>
                             - Se désiter
                         {% endif %}
 
                         {% if userParticipates == false  %}
-                            <a href="{{ path('sortie_details', {'id': sortie.id}) }}">Afficher</a>
+                            <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}">S'inscrire</a>
                             - S'inscrire'
                         {% endif %}
 

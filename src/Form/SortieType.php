@@ -3,11 +3,13 @@
 namespace App\Form;
 
 use App\Entity\Campus;
+use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Ville;
 use App\Repository\CampusRepository;
+use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\VilleRepository;
@@ -98,6 +100,13 @@ class SortieType extends AbstractType
                         ->orderBy('v.nom', 'ASC');
                 }
             ])
+
+//            ->add('etat', EntityType::class, [
+//                'class' => Etat::class,
+//                'mapped' => false,
+//                'choice_label'=>'nom',
+//                'attr' => ['class' => 'form-control'],
+//            ])
             ->add('lieuRue', null, [
                 'mapped' => false,
             ])
@@ -110,12 +119,13 @@ class SortieType extends AbstractType
             ->add('villeCodePostal', null, [
                 'mapped' => false,
             ])
+            ->add('etatLibelle', null, [
+                'mapped' => false,
+            ])
 
 
 
-//            ->add('etat', null,[
-//                'attr' => ['class' => 'form-control']
-//            ])
+
 //
 //            ->add('participant', EntityType::class, [
 //                'class' => Participant::class,

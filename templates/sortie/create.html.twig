@@ -70,7 +70,9 @@
             <div class="col-md-12 d-flex justify-content-center">
                 {{ form_widget(form.enregistrer, {'attr': {'class': 'btn btn-primary mt-3 me-2'}}) }}
                 {{ form_widget(form.publier, {'attr': {'class': 'btn btn-success mt-3 me-2'}}) }}
-                {{ form_widget(form.annuler, {'attr': {'class': 'btn btn-danger mt-3'}}) }}
+{#                {{ form_widget(form.annuler, {'attr': {'class': 'btn btn- mt-3'}}) }}#}
+                <a href="{{ path('sortie_list', {'id': sortie.id}) }}" class="btn btn-danger mt-3">Annuler</a>
+
             </div>
         </div>
 

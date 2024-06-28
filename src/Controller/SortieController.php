@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\SortieRepository;
+use App\Service\InscriptionSortieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +16,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
 {
+    public function __construct(private readonly InscriptionSortieService $inscriptionSortieService)
+    {
+    }
+
     #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'])]
     #[Route('/create', name: 'create')]
     public function createSortie(
@@ -153,5 +159,53 @@ class SortieController extends AbstractController
             'sortie'=>$sortie,
             'sortiesWithPostalCode'=>$sortiesWithPostalCode,
         ]);
+    }
+
+    #[Route('/inscrire/{id}', name: 'inscrire', requirements: ['id' => '\d+'])]
+    public function inscrireSortie(
+        SortieRepository $sortieRepository,
+        EntityManagerInterface $entityManager,
+        int $id=null,
+    ) : Response {
+        $sortie = $sortieRepository->find($id);
+        if (!$sortie) {
+            throw $this->createNotFoundException('La sortie n\'existe pas.');
+        }
+        $participant=$sortie->getParticipants();
+        if($participant instanceof Participant){
+            $this->inscriptionSortieService->inscrire($sortie, $participant, $sortieRepository);
+
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Vous êtes inscrit avec succès à la sortie ' . $sortie->getNom());
+        } else {
+            $this->addFlash('error', 'Vous devez être connecté(e) pour vous inscrire à une sortie. ');
+        }
+        return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
+    }
+
+    #[Route('/deinscrire/{id}', name: 'deinscrire', requirements: ['id' => '\d+'])]
+    public function deinscrireSortie(
+        SortieRepository $sortieRepository,
+        EntityManagerInterface $entityManager,
+        int $id=null,
+    ) : Response {
+        $sortie = $sortieRepository->find($id);
+        if (!$sortie) {
+            throw $this->createNotFoundException('La sortie n\'existe pas.');
+        }
+        $participant=$sortie->getParticipants();
+        if($participant instanceof Participant){
+            $this->inscriptionSortieService->desinscrire($sortie, $participant,$sortieRepository);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Vous vous êtes déinscrit de la sortie ' . $sortie->getNom(). ' avec succes.');
+        } else {
+            $this->addFlash('error','Vous devez êtes connecté pour pouvoir vous déinscrire !');
+
+        }
+        return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
     }
 }
