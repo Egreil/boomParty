@@ -70,7 +70,7 @@ class SortieType extends AbstractType
 
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'mapped' => false,
+                'mapped' => true,
                 'choice_label' => 'nom',
                 'attr' => ['class' => 'form-control'],
                 'query_builder' => function (CampusRepository $campusRepository) {
