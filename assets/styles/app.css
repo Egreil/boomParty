@@ -20,3 +20,8 @@ html, body {
 .logo-img{
     height: 20vh;
 }
+
+.table-wrapper {
+    max-height: 300px; /* Définir la hauteur maximale du conteneur pour activer le défilement vertical */
+    overflow-y: auto; /* Activer le défilement vertical */
+}
