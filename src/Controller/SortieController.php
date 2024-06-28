@@ -109,26 +109,26 @@ class SortieController extends AbstractController
                 throw $this->createNotFoundException('Identifiant de sortie manquant.');
             }
 
-            // Récupérer la sortie à supprimer
+
             $sortie = $sortieRepository->find($id);
 
             if (!$sortie) {
                 throw $this->createNotFoundException('Sortie non trouvée pour l\'identifiant ' . $id);
             }
 
-            // Supprimer la sortie
+
             $entityManager->remove($sortie);
             $entityManager->flush();
 
-            // Rediriger vers une page ou afficher un message de confirmation
+
             $this->addFlash('success', 'La sortie a été supprimée avec succès.');
 
-            return $this->redirectToRoute('sortie_create'); // Rediriger vers la liste des sorties après suppression
+            return $this->redirectToRoute('sortie_create');
         } catch (\Exception $e) {
-            // Gérer toute autre exception ici, par exemple :
+
             $this->addFlash('error', 'Une erreur s\'est produite lors de la suppression de la sortie.');
 
-            return $this->redirectToRoute('sortie_create'); // Rediriger vers la liste des sorties en cas d'erreur
+            return $this->redirectToRoute('sortie_create');
         }
     }
 
