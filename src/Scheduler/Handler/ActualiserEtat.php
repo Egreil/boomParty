@@ -4,10 +4,11 @@ namespace App\Scheduler\Handler;
 
 use App\Entity\Etat;
 use App\Entity\Sortie;
+use App\Service\ActualiserEtatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Scheduler\Attribute\AsCronTask;
 
-//#[AsCronTask('*/1 */1 * * *',timezone:"EUROPE/PARIS")]
+#[AsCronTask('*/1 */1 * * *',timezone:"EUROPE/PARIS")]
 class ActualiserEtat
 {
     public function __construct (private EntityManagerInterface $entityManager) {
@@ -15,33 +16,12 @@ class ActualiserEtat
     }
 
 
-    public function __invoke():string {
-        $em=$this->entityManager;
-        $sortieRepository=$em->getRepository(Sortie::class);
-        //Récupération des sorties à passer "Activité en cours"
-        $etatEnCours=$em->getRepository(Etat::class)->findOneBy(['libelle'=>'Activité en cours']);
-        $sortiesCommencees=$sortieRepository->findSortiesCommencees();
-        foreach($sortiesCommencees as $sortie){
-            $sortie->setEtat($etatEnCours);
-            $em->persist($sortie);
-        }
+    public function __invoke() {
+        $actualiserEtatService=new ActualiserEtatService($this->entityManager);
+        //actualisation des sorties à passer "Activité en cours"
+        $actualiserEtatService->actualiserSortiesEnCours();
+        //actualisation des sorties à passer "Passée"
+        $actualiserEtatService->actualiserSortiesPassees();
 
-
-        //Récupération des sorties à passer "Passée"
-        $etatPassee=$em->getRepository(Etat::class)->findOneBy(['libelle'=>'Passée']);
-        $sortiesPassees=$sortieRepository->findSortiesPassees();
-        foreach($sortiesPassees as $sortie){
-            $sortie->setEtat($etatPassee);
-            $em->persist($sortie);
-        }
-        $em->flush();
-        $sortiesAHistoriser=$sortieRepository->findSortiesAHistoriser();
-        foreach($sortiesAHistoriser as $sortie) {
-
-            var_dump($sortie->getNom());
-            var_dump($sortie->getEtat()->getLibelle());
-        }
-
-        return "ok";
     }
 }

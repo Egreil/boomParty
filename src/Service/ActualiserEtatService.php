@@ -24,13 +24,58 @@ class ActualiserEtatService
 
     public function historiser(){
         $em=$this->entityManager;
+        $sortieRepository=$em->getRepository(Sortie::class);
         $etatHistorise=$em->getRepository(Etat::class)->findOneBy(['libelle'=>'Historisée']);
-        $sortiesAHistoriser=$this->sortieRepository->findSortiesAHistoriser();
-        foreach($sortiesAHistoriser as $sortie){
-            $sortie->setEtat($etatHistorise);
+        $sortiesAHistoriser=$sortieRepository->findSortiesAHistoriser();
+
+//
+//        foreach($sortiesAHistoriser as $sortie){
+//            var_dump($sortie->getNom());
+//            var_dump($sortie->getEtat()->getLibelle());
+//            $sortie->setEtat($etatHistorise);
+//            $em->persist($sortie);
+//        }
+        $em->flush();
+//        $sortiesAHistoriser=$sortieRepository->findSortiesAHistoriser();
+//        foreach($sortiesAHistoriser as $sortie) {
+//
+//            var_dump($sortie->getNom());
+//            var_dump($sortie->getEtat()->getLibelle());
+//        }
+    }
+
+    public function actualiserSortiesEnCours()
+    {
+        $em = $this->entityManager;
+        $sortieRepository = $em->getRepository(Sortie::class);
+        //Récupération des sorties à passer "Activité en cours"
+        $etatEnCours = $em->getRepository(Etat::class)->findOneBy(['libelle' => 'Activité en cours']);
+        $sortiesCommencees = $sortieRepository->findSortiesCommencees();
+        foreach ($sortiesCommencees as $sortie) {
+            $sortie->setEtat($etatEnCours);
             $em->persist($sortie);
         }
         $em->flush();
+
+    }
+
+    //Récupération des sorties à passer "Passée"
+    public function actualiserSortiesPassees(){
+        $em = $this->entityManager;
+        $sortieRepository = $em->getRepository(Sortie::class);
+        $etatPassee=$em->getRepository(Etat::class)->findOneBy(['libelle'=>'Passée']);
+        $sortiesPassees=$sortieRepository->findSortiesPassees();
+        foreach($sortiesPassees as $sortie){
+            $sortie->setEtat($etatPassee);
+            $em->persist($sortie);
+        }
+        $em->flush();
+//        $sortiesAHistoriser=$sortieRepository->findSortiesAHistoriser();
+//        foreach($sortiesAHistoriser as $sortie) {
+//
+//            var_dump($sortie->getNom());
+//            var_dump($sortie->getEtat()->getLibelle());
+//        }
     }
 
 
