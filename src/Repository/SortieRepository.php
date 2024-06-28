@@ -91,6 +91,7 @@ class SortieRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('s');
         $qb->innerJoin('s.etat', 'e')->addSelect('e')
             ->andWhere("e.libelle != 'Historisée'");
+
         $query = $qb->getQuery();
         $result=$query->getResult();
         return $result;
@@ -99,7 +100,7 @@ class SortieRepository extends ServiceEntityRepository
     public function findSortiesPassees(){
         $rsm = new ResultSetMappingBuilder($this->getEntityManager());
         $rsm->addRootEntityFromClassMetadata('App\Entity\Sortie', 's');
-        $sql="SELECT s. FROM sortie as s join  etat  as e on s.etat_id=e.id  WHERE (TIMESTAMPDIFF(MINUTE,ADDDATE(s.date_heure_debut, INTERVAL s.duree HOUR), NOW()))>=0 AND e.libelle='Activité en cours';";
+        $sql="SELECT s.* FROM sortie as s join  etat  as e on s.etat_id=e.id  WHERE (TIMESTAMPDIFF(MINUTE,ADDDATE(s.date_heure_debut, INTERVAL s.duree HOUR), NOW()))>=0 AND e.libelle='Activité en cours';";
         $query=$this->getEntityManager()->createNativeQuery($sql,$rsm);
         $result=$query->getResult();
         return $result;
