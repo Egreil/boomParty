@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\LieuService\LieuService;
+use App\Service\LieuService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

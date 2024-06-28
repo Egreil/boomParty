@@ -1,49 +1,48 @@
 {% extends 'base.html.twig' %}
 
-
-{#c'est avec Boostrap #}
 {% block body %}
     <div class="container mt-5">
-        <h1 class="mb-4">Afficher une Sortie</h1>
+        <h1 class="mb-4 text-center">Afficher une Sortie</h1>
+        <br>
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <strong>Nom de la sortie :</strong> {{ sortie.nom }}
+                    <strong>Nom de la sortie :</strong> {{ sortie.nom ?? 'N/A' }}
                 </div>
                 <div class="mb-3">
-                    <strong>Date et heure de début :</strong> {{ sortie.dateHeureDebut | date("Y-m-d H:i") }}
+                    <strong>Date et heure de début :</strong> {{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date("Y-m-d H:i") : 'N/A' }}
                 </div>
                 <div class="mb-3">
-                    <strong>Date limite d'inscription :</strong> {{ sortie.dateLimiteInscription | date("Y-m-d") }}
+                    <strong>Date limite d'inscription :</strong> {{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date("Y-m-d") : 'N/A' }}
                 </div>
                 <div class="mb-3">
-                    <strong>Nombre de places :</strong> {{ sortie.nbInscriptionMax }}
+                    <strong>Nombre de places :</strong> {{ sortie.nbInscriptionMax ?? 'N/A' }}
                 </div>
                 <div class="mb-3">
-                    <strong>Durée :</strong> {{ sortie.duree }} minutes
+                    <strong>Durée :</strong> {{ sortie.duree ?? 'N/A' }} minutes
                 </div>
                 <div class="mb-3">
-                    <strong>Description et infos :</strong> {{ sortie.infosSortie }}
+                    <strong>Description et infos :</strong> {{ sortie.infosSortie ?? 'N/A' }}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
-                    <strong>Campus :</strong> {{ sortie.campus.nom }}
+                    <strong>Campus :</strong> {{ sortie.campus ? sortie.campus.nom : 'N/A' }}
                 </div>
                 <div class="mb-3">
-                    <strong>Lieu :</strong> {{ sortie.lieu.nom }}
+                    <strong>Lieu :</strong> {{ sortie.lieu ? sortie.lieu.nom : 'N/A' }}
                 </div>
                 <div class="mb-3">
-                    <strong>Rue :</strong> {{ sortie.lieu.rue }}
+                    <strong>Rue :</strong> {{ sortie.lieu ? sortie.lieu.rue : 'N/A' }}
                 </div>
                 <div class="mb-3">
-                    <strong>Code postal :</strong> {{ sortie.lieu.ville.codePostal}}
+                    <strong>Code postal :</strong> {{ sortie.lieu ? sortie.lieu.ville.codePostal : 'N/A' }}
                 </div>
                 <div class="mb-3">
-                    <strong>Latitude :</strong> {{ sortie.lieu.latitude }}
+                    <strong>Latitude :</strong> {{ sortie.lieu ? sortie.lieu.latitude : 'N/A' }}
                 </div>
                 <div class="mb-3">
-                    <strong>Longitude :</strong> {{ sortie.lieu.longitude }}
+                    <strong>Longitude :</strong> {{ sortie.lieu ? sortie.lieu.longitude : 'N/A' }}
                 </div>
             </div>
         </div>
@@ -74,4 +73,3 @@
         </div>
     </div>
 {% endblock %}
-
