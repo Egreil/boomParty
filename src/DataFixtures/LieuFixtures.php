@@ -68,8 +68,9 @@ class LieuFixtures extends Fixture
 
         for ($i = 0; $i < 20; $i++) {
             $ville = new Ville();
-            $ville->setCodePostal($this->faker->postcode)
-            ->setNom($this->faker->city);
+            $ville
+                ->setCodePostal($this->faker->postcode)
+                ->setNom($this->faker->city);
 
             $manager->persist($ville);
         }

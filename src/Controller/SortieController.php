@@ -14,90 +14,144 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
 {
-    #[Route('/update/{id}', name:'update',requirements: ['id'=> '\d+'])]
-    #[Route('/create', name:'create')]
+    #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'])]
+    #[Route('/create', name: 'create')]
     public function createSortie(
         Request $request,
         EntityManagerInterface $entityManager,
-        int $id=null,
+        int $id = null,
         SortieRepository $sortieRepository
-    ): Response
-    {
+    ): Response {
+        if ($id) {
+            $sortie = $sortieRepository->find($id);
 
-        if($id){
-            $sortie=$sortieRepository->find($id);
+            if (!$sortie) {
+                throw $this->createNotFoundException('La sortie n\'existe pas !');
+            }
+            $isUpdate = true;
+        } else {
+            $sortie = new Sortie();
+            $isUpdate = false;
         }
-        else{
-            $sortie=new Sortie();
-        }
-        $sortieForm=$this->createForm(SortieType::class,$sortie);
+
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
-        if($sortieForm->isSubmitted() && $sortieForm->isValid()){
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            $user = $this->getUser();
+            $sortie->setOrganisateur($user);
+
+            $published = false;
+
+            if ($sortieForm->has('publier') && $sortieForm->get('publier')->isClicked()) {
+                $published = true;
+            }
+
+            if (!$isUpdate) {
+                $sortie->setDateHeureDebut(new \DateTime());
+                $sortie->setDateLimiteInscription(new \DateTime());
+            }
+
             $entityManager->persist($sortie);
             $entityManager->flush();
-            return $this->redirectToRoute('sortie_details',[
-                'id'=>$sortie->getId()
+
+            if ($published) {
+                $this->addFlash('success', 'La sortie ' . $sortie->getNom() . ' a été publiée avec succès.');
+            } else {
+                if ($isUpdate) {
+                    $this->addFlash('success', 'La sortie ' . $sortie->getNom() . ' a été modifiée avec succès.');
+                } else {
+                    $this->addFlash('info', 'La sortie ' . $sortie->getNom() . ' a été enregistrée avec succès.');
+                }
+            }
+
+            return $this->redirectToRoute('sortie_details', [
+                'id' => $sortie->getId()
             ]);
         }
 
-        return $this->render('sortie/create.html.twig', [
+        $template = $id ? 'sortie/update.html.twig' : 'sortie/create.html.twig';
+        return $this->render($template, [
             'sortie' => $sortie,
-            'form' => $sortieForm,
+            'form' => $sortieForm->createView(),
         ]);
     }
-    #[Route('/list',name:'list')]
-    #[Route('/',name:'')]
+
+    #[Route('/list', name: 'list')]
+    #[Route('/', name: '')]
     public function listSorties(
         SortieRepository $sortieRepository,
-        Request $request,
-    ){
-        $sorties=$sortieRepository->findSorties($request);
+        Request          $request,
+    )
+    {
 
-        return $this->render('sortie/list.html.twig',[
-            'sorties'=>$sorties
-        ]
+        $sorties = $sortieRepository->findSorties($request);
+
+        //dd($sorties);
+
+
+        return $this->render('sortie/list.html.twig', [
+                'sorties' => $sorties,
+            ]
 
         );
     }
 
 
-    #[Route('/delete/{id}', name:'delete',requirements: ['id'=> '\d+'])]
+    #[Route('/delete/{id}', name: 'delete', requirements: ['id' => '\d+'])]
     public function deleteSortie(
         EntityManagerInterface $entityManager,
-        int $id=null,
+        int $id = null,
         SortieRepository $sortieRepository
-    ): Response
-    {
-        if($id){
-            $sortie=$sortieRepository->find($id);
+    ): Response {
+        try {
+            if (!$id) {
+                throw $this->createNotFoundException('Identifiant de sortie manquant.');
+            }
+
+
+            $sortie = $sortieRepository->find($id);
+
+            if (!$sortie) {
+                throw $this->createNotFoundException('Sortie non trouvée pour l\'identifiant ' . $id);
+            }
+
+
+            $entityManager->remove($sortie);
+            $entityManager->flush();
+
+
+            $this->addFlash('success', 'La sortie a été supprimée avec succès.');
+
+            return $this->redirectToRoute('sortie_create');
+        } catch (\Exception $e) {
+
+            $this->addFlash('error', 'Une erreur s\'est produite lors de la suppression de la sortie.');
+
+            return $this->redirectToRoute('sortie_create');
         }
-        $entityManager->remove($sortie);
-        $entityManager->flush();
-        return $this->render('sortie/list.html.twig', [
-        ]);
     }
+
     #[Route('/details/{id}', name:'details',requirements: ['id'=> '\d+'])]
     public function detailSortie(
-    SortieRepository $sortieRepository,
-    int $id=null,
+        SortieRepository $sortieRepository,
+        int $id=null,
     ){
-        if($id) {
-            $sortie = $sortieRepository->find($id);
+        if(!$id) {
+            throw $this->createNotFoundException('Identifiants introuvable');
+        }
+        $sortie = $sortieRepository->find($id);
+
+        if(!$sortie) {
+            throw $this->createNotFoundException('Cet événement n\'existe pas :(' );
         }
 
-//        if(!$sortie) {
-//            throw $this->createNotFoundException('Sortie inexistante');
-//        }
-        // fonction que j'ai créer pour recuperer le codePostal depuis le repo
-//            $sortiePlace=$sortie->findSortiesByCityAndPlace(
-//                $sortie->getLieu()->getVille()->getId(),
-//                $sortie->getLieu()->getId()
-//            );
-
+        $sortiesWithPostalCode =$sortieRepository->findSortiesByCityAndPlace();
+//
+//        dd($sortie);
         return $this->render('sortie/details.html.twig',[
             'sortie'=>$sortie,
-//            'sortiePlace'=>$sortiePlace,
+            'sortiesWithPostalCode'=>$sortiesWithPostalCode,
         ]);
     }
 }

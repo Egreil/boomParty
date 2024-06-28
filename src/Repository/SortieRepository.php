@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,15 +18,19 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     public function findSorties(){
-        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
-        $rsm->addRootEntityFromClassMetadata('App\Entity\Sortie', 's');
-        $sql="SELECT * FROM sortie as s";
-        $query=$this->getEntityManager()->createNativeQuery($sql,$rsm);
-        //return $this->createQueryBuilder('s')
-        return $query->getResult();
+        return $this->createQueryBuilder('s')
+            ->select('s', 'campus', 'lieu', 'etat', 'organisateur', 'participants')
+            ->leftJoin('s.campus', 'campus')
+            ->leftJoin('s.lieu', 'lieu')
+            ->leftJoin('s.etat', 'etat')
+            ->leftJoin('s.organisateur', 'organisateur')
+            ->leftJoin('s.participants', 'participants')
+            ->getQuery()
+            ->getResult();
     }
+
     public function findSortiesAHistoriser()
-{
+    {
 //    Option1:dql, doctrine query langage
 //        $sql="SELECT s FROM sortie as s join  etat  as e on e.id=s.etat_id  WHERE (TIMESTAMPDIFF(MONTH,s.date_heure_debut, NOW()))>=1 and e.libelle!='Historisé';";
 
@@ -53,7 +55,6 @@ class SortieRepository extends ServiceEntityRepository
         return $result;
     }
 
-
 //    public function findSortiesByCityAndPlace(int $villeId, int $lieuId): array
 //    {
 //        return $this->createQueryBuilder('s')
@@ -66,6 +67,49 @@ class SortieRepository extends ServiceEntityRepository
 //            ->getQuery()
 //            ->getResult();
 //    }
+
+    public function findSortiesAHistoriser()
+    {
+//    Option1:dql, doctrine query langage
+//        $sql="SELECT s FROM sortie as s join  etat  as e on e.id=s.etat_id  WHERE (TIMESTAMPDIFF(MONTH,s.date_heure_debut, NOW()))>=1 and e.libelle!='Historisé';";
+
+//        Option2: dql avec QueryBuilder
+//        $dq=$this->createQueryBuilder('s')
+//                ->join('App\Entity\Etat','e','e.id=s.etat_id')
+//            ->andWhere("TIMESTAMPDIFF(MONTH,s.date_heure_debut, NOW()))>=1 and e.libelle!='Historisé'");
+//        $query=$this->getEntityManager()->createQuery($dq);
+
+
+        //Option3: native query
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addRootEntityFromClassMetadata('App\Entity\Sortie', 's');
+        $sql="SELECT * FROM sortie as s join  etat  as e on e.id=s.etat_id  WHERE (TIMESTAMPDIFF(MONTH,s.date_heure_debut, NOW()))>=1 AND e.libelle<>'Historisée';";
+        $query=$this->getEntityManager()->createNativeQuery($sql,$rsm);
+
+        //        $result=$this->getEntityManager()->getConnection()->executeQuery($sql);
+        //var_dump($query);
+//        $result=$result->fetchAllAssociative();
+        $result=$query->getResult();
+        //var_dump($result);
+        return $result;
+    }
+
+    //    public function findByCodePostal(){
+//        $qb = $this->createQueryBuilder('s');
+//        $qb->leftJoin('s.codePostal', 'cp');
+//        $query =$qb->getQuery();
+//    }
+    public function findSortiesByCityAndPlace(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->leftJoin('s.lieu', 'lieu')
+            ->leftJoin('lieu.ville','ville')
+            ->addSelect('lieu')
+            ->addSelect('ville')
+            ->getQuery()
+            ->getResult();
+
+    }
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
 //     */
