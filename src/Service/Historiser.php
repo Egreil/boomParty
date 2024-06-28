@@ -20,14 +20,16 @@ readonly final class Historiser
     public function __construct (private EntityManagerInterface $entityManager) {
 
     }
-    public function __invoke():string {
 
+    public function __invoke():string {
         $em=$this->entityManager;
         $sortieRepository=$em->getRepository(Sortie::class);
         $etatHistorise=$em->getRepository(Etat::class)->findOneBy(['libelle'=>'Historisée']);
         $sortiesAHistoriser=$sortieRepository->findSortiesAHistoriser();
-        var_dump($sortiesAHistoriser);
+
         foreach($sortiesAHistoriser as $sortie){
+            var_dump($sortie->getNom());
+            var_dump($sortie->getEtat()->getLibelle());
             $sortie->setEtat($etatHistorise);
             $em->persist($sortie);
         }
