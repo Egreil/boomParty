@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Participant;
+use App\Exception\UsernameNotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
@@ -10,6 +11,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Exception\UserNotActiveException;
 
 /**
  * @extends ServiceEntityRepository<Participant>
@@ -48,8 +50,13 @@ class ParticipantRepository extends ServiceEntityRepository implements UserLoade
             ->getQuery()
             ->getOneOrNullResult();
 
-        if (!$Participant) {
-            throw new UsernameNotFoundException('Participant not found.');
+        //dd($Participant);
+
+        if (!$Participant | $Participant == null ) {
+            throw new UsernameNotFoundException();
+        }
+        if (!$Participant->isActif()) {
+            throw new UserNotActiveException();
         }
 
         return $Participant;
