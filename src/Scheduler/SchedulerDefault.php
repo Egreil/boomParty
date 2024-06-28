@@ -10,7 +10,7 @@ use Symfony\Component\Scheduler\Schedule;
 use Symfony\Component\Scheduler\ScheduleProviderInterface;
 
 #[AsSchedule('default')]
-final class ActualiserEtat implements ScheduleProviderInterface
+final class SchedulerDefault implements ScheduleProviderInterface
 {
     public function __construct(private readonly EntityManagerInterface $em) {
     }
@@ -21,8 +21,12 @@ final class ActualiserEtat implements ScheduleProviderInterface
 
         //Option: ajouter une tache au scheduler Methode de base
         //RecurringMessage::cron('*/1 */1 * * *',new Historiser($this->em),new \DateTimeZone('Europe/Paris'));
+
+
         $schedule=new Schedule();
-        $historiser=new Historiser($this->em);
+//        $historiser=new Historiser($this->em);
+
+
         //$schedule->add( RecurringMessage::cron('*/1 */1 * * *',new Historiser($this->em),new \DateTimeZone('Europe/Paris')));
 
 

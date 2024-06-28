@@ -7,7 +7,7 @@ use App\Entity\Sortie;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Scheduler\Attribute\AsCronTask;
 
-#[AsCronTask('*/1 */1 * * *',timezone:"EUROPE/PARIS")]
+//#[AsCronTask('*/1 */1 * * *',timezone:"EUROPE/PARIS")]
 class ActualiserEtat
 {
     public function __construct (private EntityManagerInterface $entityManager) {
