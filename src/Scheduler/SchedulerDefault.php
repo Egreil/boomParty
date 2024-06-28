@@ -2,19 +2,15 @@
 
 namespace App\Scheduler;
 
-use App\Service\Historiser;
+use App\Scheduler\Handler\Historiser;
 use App\Service\HistoriserHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Scheduler\Attribute\AsSchedule;
-use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule;
 use Symfony\Component\Scheduler\ScheduleProviderInterface;
-use Symfony\Component\Scheduler\Scheduler;
-use Symfony\Component\Scheduler\Trigger\CronExpressionTrigger;
-use Symfony\Contracts\Cache\CacheInterface;
 
 #[AsSchedule('default')]
-final class ActualiserEtat implements ScheduleProviderInterface
+final class SchedulerDefault implements ScheduleProviderInterface
 {
     public function __construct(private readonly EntityManagerInterface $em) {
     }
@@ -25,8 +21,12 @@ final class ActualiserEtat implements ScheduleProviderInterface
 
         //Option: ajouter une tache au scheduler Methode de base
         //RecurringMessage::cron('*/1 */1 * * *',new Historiser($this->em),new \DateTimeZone('Europe/Paris'));
+
+
         $schedule=new Schedule();
-        $historiser=new Historiser($this->em);
+//        $historiser=new Historiser($this->em);
+
+
         //$schedule->add( RecurringMessage::cron('*/1 */1 * * *',new Historiser($this->em),new \DateTimeZone('Europe/Paris')));
 
 

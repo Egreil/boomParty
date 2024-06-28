@@ -28,42 +28,51 @@
                 </thead>
                 <tbody>
                 {% for sortie in sorties %}
-                <tr>
-                    <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.dateHeureDebut | date('Y-d-m') }}</td>
-                    <td>{{ sortie.dateLimiteInscription | date('Y-d-m') }}</td>
-                    <td>{{ sortie.participants | length }} /{{ sortie.nbInscriptionMax }}</td>
-                    <td>{{ sortie.etat.libelle }}</td>
-                    <td>
-                        {% set userParticipates = false %}
-                        {% for participant in sortie.participants %}
-                            {% if participant.id == app.user.id %}
-                                {% set userParticipates = true %}
-                                X
+                    <tr>
+                        <td>{{ sortie.nom }}</td>
+                        <td>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</td>
+                        <td>{{ sortie.dateLimiteInscription | date('d/m/Y') }}</td>
+                        <td>{{ sortie.participants | length }} /{{ sortie.nbInscriptionMax }}</td>
+                        <td>{{ sortie.etat.libelle }}</td>
+                        <td>
+                            {% set userParticipates = false %}
+                            {% for participant in sortie.participants %}
+                                {% if participant.id == app.user.id %}
+                                    {% set userParticipates = true %}
+                                    <span class="badge bg-primary">Inscrit</span>
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{ sortie.organisateur.nom }}</td>
+                        <td>
+                            {% if sortie.organisateur.id == app.user.id %}
+                                <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Modifier</a>
+                                <a href="#" class="btn btn-sm btn-secondary">Publier</a>
                             {% endif %}
-                        {% endfor %}
-                    </td>
-                    <td>{{ sortie.organisateur.nom }}</td>
-                    <td>
-                        {% if sortie.organisateur.id == app.user.id %}
-                            <a href="{{ path('sortie_update', {'id': sortie.id}) }}">Modifier</a>
-                            - Publier
-                        {% endif %}
 
                         {% if userParticipates  %}
                             <a href="{{ path('sortie_deinscrire', {'id': sortie.id}) }}">Afficher</a>
-                            - Se désiter
+
                         {% endif %}
 
                         {% if userParticipates == false  %}
                             <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}">S'inscrire</a>
-                            - S'inscrire'
+
                         {% endif %}
 
 
                     </td>
 
                 </tr>
+                            {% if userParticipates %}
+                                <a href="{{ path('sortie_details', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Afficher</a>
+                                <a href="#" class="btn btn-sm btn-danger">Se désister</a>
+                            {% else %}
+                                <a href="{{ path('sortie_details', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Afficher</a>
+                                <a href="#" class="btn btn-sm btn-success">S'inscrire</a>
+                            {% endif %}
+                        </td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>

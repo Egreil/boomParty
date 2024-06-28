@@ -1,6 +1,8 @@
 # translations/security.fr.yaml
 
 security:
+  Participant not found.: "Identifiants invalides"
+  User account is not active.: "Le compte utilisateur n'est pas actif."
   An authentication exception occurred.: "Une erreur d'authentification s'est produite."
   Authentication credentials could not be found.: "Les informations d'identification n'ont pas pu être trouvées."
   Invalid credentials.: "Identifiants invalides."
@@ -15,3 +17,4 @@ security:
   Credentials have expired.: "Les informations d'identification ont expiré."
   Account is disabled.: "Le compte est désactivé."
   Account is locked.: "Le compte est verrouillé."
+

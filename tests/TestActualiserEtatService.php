@@ -2,9 +2,8 @@
 
 namespace App\Tests;
 
-use App\Repository\SortieRepository;
+use App\Scheduler\Handler\Historiser;
 use App\Service\ActualiserEtatService;
-use App\Service\Historiser;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
