@@ -1,6 +1,6 @@
 <?php
 
-namespace App\LieuService;
+namespace App\Service;
 
 use App\Entity\Lieu;
 use Doctrine\ORM\EntityManagerInterface;
