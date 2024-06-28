@@ -2,16 +2,12 @@
 
 namespace App\Scheduler;
 
-use App\Service\Historiser;
+use App\Scheduler\Handler\Historiser;
 use App\Service\HistoriserHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Scheduler\Attribute\AsSchedule;
-use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule;
 use Symfony\Component\Scheduler\ScheduleProviderInterface;
-use Symfony\Component\Scheduler\Scheduler;
-use Symfony\Component\Scheduler\Trigger\CronExpressionTrigger;
-use Symfony\Contracts\Cache\CacheInterface;
 
 #[AsSchedule('default')]
 final class ActualiserEtat implements ScheduleProviderInterface

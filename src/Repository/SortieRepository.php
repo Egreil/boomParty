@@ -46,12 +46,7 @@ class SortieRepository extends ServiceEntityRepository
         $rsm->addRootEntityFromClassMetadata('App\Entity\Sortie', 's');
         $sql="SELECT * FROM sortie as s join  etat  as e on e.id=s.etat_id  WHERE (TIMESTAMPDIFF(MONTH,s.date_heure_debut, NOW()))>=1 AND e.libelle<>'Historisée';";
         $query=$this->getEntityManager()->createNativeQuery($sql,$rsm);
-
-        //        $result=$this->getEntityManager()->getConnection()->executeQuery($sql);
-        //var_dump($query);
-//        $result=$result->fetchAllAssociative();
         $result=$query->getResult();
-        //var_dump($result);
         return $result;
     }
 
@@ -84,28 +79,24 @@ class SortieRepository extends ServiceEntityRepository
             ->getResult();
 
     }
-//    /**
-//     * @return Sortie[] Returns an array of Sortie objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?Sortie
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //TODO faire une requete qui calcule le temps debut + duree
+    public function findSortiesCommencees(){
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addRootEntityFromClassMetadata('App\Entity\Sortie', 's');
+        $sql="SELECT * FROM sortie as s join  etat  as e on e.id=s.etat_id  WHERE (TIMESTAMPDIFF(MINUTE,s.date_heure_debut, NOW()))>=0 AND (e.libelle='Ouverte' OR e.libelle='Cloturée');";
+        $query=$this->getEntityManager()->createNativeQuery($sql,$rsm);
+        $result=$query->getResult();
+        return $result;
+    }
+    //TODO faire une requete qui calcule le temps debut + duree
+    public function findSortiesPassees(){
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addRootEntityFromClassMetadata('App\Entity\Sortie', 's');
+        $sql="SELECT * FROM sortie as s join  etat  as e on e.id=s.etat_id  WHERE (TIMESTAMPDIFF(MINUTE,ADDDATE(s.date_heure_debut, INTERVAL s.duree HOUR), NOW()))>=0 AND e.libelle='Activité en cours';";
+        $query=$this->getEntityManager()->createNativeQuery($sql,$rsm);
+        $result=$query->getResult();
+        return $result;
+    }
+
 }
