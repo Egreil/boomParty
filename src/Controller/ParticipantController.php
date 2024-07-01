@@ -29,7 +29,6 @@ class ParticipantController extends AbstractController
         else{
             $participant=
                 $this->getUser();
-                //dd($participant);
         }
         return $this->render('participant/details.html.twig', [
             'participant' => $participant,

@@ -36,6 +36,9 @@ class SortieController extends AbstractController
     ): Response {
         if ($id) {
             $sortie = $sortieRepository->find($id);
+            if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
+                return $this->redirectToRoute('sortie_list');
+            }
 
             if (!$sortie) {
                 throw $this->createNotFoundException('La sortie n\'existe pas !');
@@ -139,6 +142,9 @@ class SortieController extends AbstractController
     ) : Response
     {
         $sortie = $sortieRepository->find($id);
+        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
+            return $this->redirectToRoute('sortie_list');
+        }
         if(!$sortie){
             return $this->json(['error' => 'Sortie introuvable'], Response::HTTP_NOT_FOUND);
         }
@@ -157,6 +163,9 @@ class SortieController extends AbstractController
     ): Response
     {
         $sortie = $sortieRepository->find($id);
+        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
+            return $this->redirectToRoute('sortie_list');
+        }
         if(!$sortie){
             $this->addFlash('error', 'Sortie introuvable');
             return $this->redirectToRoute('sortie_list');
@@ -287,6 +296,9 @@ class SortieController extends AbstractController
     ) : Response
     {
         $sortie = $sortieRepository->find($id);
+        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
+            return $this->redirectToRoute('sortie_list');
+        }
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie n\'existe pas.');
             return $this->redirectToRoute('sortie_list');
