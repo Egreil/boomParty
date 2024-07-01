@@ -103,7 +103,7 @@ class SortieController extends AbstractController
             $campus = $data['Campus'] ?? null;
             $nom = $data['nom'] ?? '';
 
-            dd($date);
+            dd($data);
 
             $sorties = $sortieRepository->findSortiesByFilters($dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse, $campus, $nom, $this->getUser());
 
