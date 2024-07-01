@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -16,31 +18,46 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
-
+    #[Assert\NotBlank(message: "Veuillez donner un nom à la sortie !")]
+    #[Assert\Length(max: 250, maxMessage: "Vous avez dépassé le nombre de caractéres maximales 50 !")]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+
+    #[Assert\NotNull(message: "Veuillez saisir une date et heure de début !")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
+
+    #[Assert\NotNull(message: "Veuillez saisir une durée !")]
+    #[Assert\Positive(message: "La durée doit être un nombre positif !")]
     #[ORM\Column]
     private ?int $duree = null;
 
+    #[Assert\NotNull(message: "Veuillez saisir une date limite d'inscription !")]
+    #[Assert\LessThan(propertyPath: 'dateHeureDebut', message: "La date limite d'inscription doit être avant la date de début !")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
+    #[Assert\NotNull(message: "Veuillez saisir un nombre maximal d'inscriptions !")]
+    #[Assert\Positive(message: "Le nombre d'inscriptions maximal doit être un nombre positif !")]
     #[ORM\Column]
     private ?int $nbInscriptionMax = null;
 
+
+    #[Assert\NotBlank(message: "Veuillez fournir des informations sur la sortie !")]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $infosSortie = null;
 
+    #[Assert\NotNull(message: "Veuillez sélectionner un campus !")]
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     private ?Campus $campus = null;
 
+    #[Assert\NotNull(message: "Veuillez sélectionner un lieu !")]
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     private ?Lieu $lieu = null;
 
+    #[Assert\NotNull(message: "Veuillez sélectionner un état !")]
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     private ?Etat $etat = null;
 
@@ -58,12 +75,6 @@ class Sortie
     {
         $this->participants = new ArrayCollection();
     }
-
-
-
-
-
-
 
 
     public function getId(): ?int
@@ -204,7 +215,7 @@ class Sortie
         return $this;
     }
 
-    public function removeParticipant(Participsant $participant): static
+    public function removeParticipant(Participant $participant): static
     {
         if ($this->participants->removeElement($participant)) {
             $participant->removeSortie($this);
