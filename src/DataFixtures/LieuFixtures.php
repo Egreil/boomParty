@@ -51,7 +51,6 @@ class LieuFixtures extends Fixture
 
             $lieu = new Lieu();
 
-            $lieu->setIdLieu($this->faker->randomDigit());
             $lieu->setNom($this->faker->name);
             $lieu->setRue($this->faker->streetAddress);
             $lieu->setLatitude($this->faker->latitude);
