@@ -36,13 +36,14 @@ class SortieController extends AbstractController
     ): Response {
         if ($id) {
             $sortie = $sortieRepository->find($id);
+            if (!$sortie) {
+                throw $this->createNotFoundException('La sortie n\'existe pas !');
+            }
             if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
                 return $this->redirectToRoute('sortie_list');
             }
 
-            if (!$sortie) {
-                throw $this->createNotFoundException('La sortie n\'existe pas !');
-            }
+
             $isUpdate = true;
         } else {
             $sortie = new Sortie();
@@ -142,11 +143,13 @@ class SortieController extends AbstractController
     ) : Response
     {
         $sortie = $sortieRepository->find($id);
-        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
-            return $this->redirectToRoute('sortie_list');
-        }
+
         if(!$sortie){
             return $this->json(['error' => 'Sortie introuvable'], Response::HTTP_NOT_FOUND);
+        }
+        //Verifier que l'organisateur est bien la personne qui fait l'annulation
+        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
+            return $this->redirectToRoute('sortie_list');
         }
         return $this->render('sortie/annuler.html.twig', [
             'sortie' => $sortie,
@@ -163,23 +166,27 @@ class SortieController extends AbstractController
     ): Response
     {
         $sortie = $sortieRepository->find($id);
-        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
-            return $this->redirectToRoute('sortie_list');
-        }
+
+        //Verifier que la sortie existe
         if(!$sortie){
             $this->addFlash('error', 'Sortie introuvable');
             return $this->redirectToRoute('sortie_list');
         }
+        //Verifier que l'organisateur est bien la personne qui fait l'annulation
+        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
+            return $this->redirectToRoute('sortie_list');
+        }
 
         $motif=$request->request->get('motif');
-
+        //Le motif doit être renseigné
         if(!$motif) {
-            $this->addFlash('error', 'Le motif doit etre renseigner');
+            $this->addFlash('error', 'Le motif doit être renseigné');
             return $this->redirectToRoute('sortie_list');
         }
         $sortie->setInfosSortie($motif);
 
         $etatSortieAnnulee = $etatRepository->findOneBy(['libelle' => 'Annulée']);
+        //redirection en absence du statut annulé
         if(!$etatSortieAnnulee){
             $this->addFlash('error', 'Etat "Annulée" non trouvée !');
             return $this->redirectToRoute('sortie_list');
@@ -296,11 +303,11 @@ class SortieController extends AbstractController
     ) : Response
     {
         $sortie = $sortieRepository->find($id);
-        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
-            return $this->redirectToRoute('sortie_list');
-        }
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie n\'existe pas.');
+            return $this->redirectToRoute('sortie_list');
+        }
+        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
             return $this->redirectToRoute('sortie_list');
         }
         $entityManager->remove($sortie);
