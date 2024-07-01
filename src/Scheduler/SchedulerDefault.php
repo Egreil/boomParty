@@ -24,32 +24,10 @@ final class SchedulerDefault implements ScheduleProviderInterface
 
 
         $schedule=new Schedule();
-//        $historiser=new Historiser($this->em);
+//       $historiser=new Historiser($this->em);
 
 
-        //$schedule->add( RecurringMessage::cron('*/1 */1 * * *',new Historiser($this->em),new \DateTimeZone('Europe/Paris')));
-
-
-
-        //Option Run
-        /*
-        $schedule = new Schedule();
-        //$schedule->
-        $scheduler = new Scheduler(handlers: [
-            Historiser::class => new HistoriserHandler(),
-            // add more handlers if you have more message types
-        ], schedules: [
-            $schedule,
-            // the scheduler can take as many schedules as you need
-        ]);
-        $scheduler->run();*/
         return $schedule;
-
-
-//
-//        );
-        //$schedule->add(RecurringMessage::cron('0 0 * * *',new Historiser()));
-        //$schedule->add(RecurringMessage::cron('*/1 */1 * * *',(new Historiser())(),new \DateTimeZone('Europe/Paris')));
 
     }
 }
