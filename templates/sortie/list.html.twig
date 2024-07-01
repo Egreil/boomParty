@@ -102,6 +102,7 @@
                             {% endif %}
 
                             {% if userParticipates %}
+                                <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Afficher</a>
                                 <a href="{{ path('sortie_deinscrire', {'id': sortie.id}) }}" class="btn btn-sm btn-danger">Se désister</a>
                             {% else %}
                                 <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-sm btn-success">S'inscrire</a>
