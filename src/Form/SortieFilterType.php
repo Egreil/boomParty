@@ -24,6 +24,8 @@ class SortieFilterType extends AbstractType
             ->add('Campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'nom',
+//                'label_attr' => ['class' => 'custom-label-class'],
+                'attr' => ['class' => 'form-control'],
                 'placeholder' => 'Choisissez un campus',
                 'query_builder' => function ( CampusRepository $campusRepository) {
                     return $campusRepository
@@ -33,19 +35,23 @@ class SortieFilterType extends AbstractType
 
             ])
             ->add('nom', TextType::class,[
-                'label' => 'Le nom de la sortie contient : '
+                'label' => 'Le nom de la sortie contient : ',
+                'label_attr' => ['class' => 'col-form-label'],
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('dateDebut', DateType::class, [
-                'label' => 'Date de début',
+                'label' => 'Entre',
                 'widget' => 'single_text',
-                'html5' => false,
+                'html5' => true,
                 'mapped' => false,
+                'attr' => ['class' => 'form-control', 'type' => 'date'],
             ])
             ->add('dateFin', DateType::class, [
-                'label' => 'Date de fin',
+                'label' => 'et',
                 'widget' => 'single_text',
-                'html5' => false,
+                'html5' => true,
                 'mapped' => false,
+                'attr' => ['class' => 'form-control', 'type' => 'date'],
             ])
 
             ->add('organisateur', CheckboxType::class, [
