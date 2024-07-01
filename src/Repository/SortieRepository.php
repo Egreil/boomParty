@@ -6,7 +6,7 @@ use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\SecurityBundle\Security;
+
 
 /**
  * @extends ServiceEntityRepository<Sortie>
@@ -16,7 +16,7 @@ class SortieRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Sortie::class);
-        //$this->security->getUser()
+        //$this->security->getUser();
     }
 
     public function findSorties(){
@@ -112,8 +112,8 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('dateFin', $dateFin);
         }
 
-        if ($organisateur) {
-            $qb->andWhere('s.organisateur = :user')
+        if ($organisateur->isActif()) {
+            $qb->andWhere('s.organisateur = getUser()')
                 ->setParameter('user', $user);
         }
 

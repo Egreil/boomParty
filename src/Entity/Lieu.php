@@ -55,17 +55,7 @@ class Lieu
         return $this->id;
     }
 
-    public function getIdLieu(): ?int
-    {
-        return $this->idLieu;
-    }
 
-    public function setIdLieu(int $idLieu): static
-    {
-        $this->idLieu = $idLieu;
-
-        return $this;
-    }
 
     public function getNom(): ?string
     {
