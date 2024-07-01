@@ -53,11 +53,11 @@ class Sortie
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     private ?Campus $campus = null;
 
-    #[Assert\NotNull(message: "Veuillez sélectionner un lieu !")]
+//    #[Assert\NotNull(message: "Veuillez sélectionner un lieu !")]
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     private ?Lieu $lieu = null;
 
-    #[Assert\NotNull(message: "Veuillez sélectionner un état !")]
+//    #[Assert\NotNull(message: "Veuillez sélectionner un état !")]
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     private ?Etat $etat = null;
 

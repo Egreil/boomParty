@@ -56,7 +56,7 @@ class SortieType extends AbstractType
 
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'mapped' => true,
+//                'mapped' => true,
                 'choice_label' => 'nom',
                 'attr' => ['class' => 'form-control'],
                 'query_builder' => function (CampusRepository $campusRepository) {
@@ -66,13 +66,14 @@ class SortieType extends AbstractType
             ])
             ->add('lieu', EntityType::class, [
                 'class' => Lieu::class,
-                'mapped' => false,
+//                'mapped' => false,
                 'choice_label' => 'nom',
+                'label' => 'Lieu :',
                 'attr' => ['class' => 'form-control'],
                 'query_builder' => function (LieuRepository $lieuRepository) {
                     return $lieuRepository->createQueryBuilder('l')
                         ->orderBy('l.nom', 'ASC');
-                }
+                }, 'required' => true,
             ])
             ->add('ville', EntityType::class, [
                 'class' => Ville::class,
@@ -85,6 +86,27 @@ class SortieType extends AbstractType
                 }
             ])
 
+
+//            ->add('enregistrer', SubmitType::class, [
+//                'label' => 'Enregistrer',
+//                'attr' => ['class' => 'btn btn-primary mt-3']
+//            ])
+//            ->add('publier', SubmitType::class, [
+//                'label' => 'Publier la sortie',
+//                'attr' => ['class' => 'btn btn-success mt-3']
+//            ])
+//            ->add('supprimer', SubmitType::class, [
+//                'label' => 'Supprimer la sortie',
+//                'attr' => ['class' => 'btn btn-success mt-3']
+//            ])
+//            ->add('annuler', SubmitType::class, [
+//                'label' => 'Annuler',
+//                'attr' => ['class' => 'btn btn-danger mt-3']
+//            ])
+//            ->add('action', HiddenType::class, [
+//                'mapped' => false,
+//            ])
+
 //            ->add('etat', EntityType::class, [
 //                'class' => Etat::class,
 //                'mapped' => false,
@@ -93,15 +115,20 @@ class SortieType extends AbstractType
 //            ])
             ->add('lieuRue', null, [
                 'mapped' => false,
+                'label'=>'Rue :',
+                'required' => false,
             ])
             ->add('lieuLatitude', null, [
                 'mapped' => false,
+                'label'=>'Latitude :',
             ])
             ->add('lieuLongitude', null, [
                 'mapped' => false,
+                'label'=>'Longitude :',
             ])
             ->add('villeCodePostal', null, [
                 'mapped' => false,
+                'label'=>'Code postal :',
             ])
 //
 

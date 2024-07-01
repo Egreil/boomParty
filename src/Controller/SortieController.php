@@ -15,8 +15,6 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
 #[Route('/sortie', name: 'sortie_')]
@@ -63,7 +61,7 @@ class SortieController extends AbstractController
                 $this->addFlash('success', 'La sortie ' . $sortie->getNom() . ' a été enregistrée avec succès.');
 
             } elseif ($action === 'publier') {
-                // Publier la sortie
+                // Publier la sortie si je click sur le bouton publier
                 $sortie->setDateHeureDebut(new \DateTime());
                 $sortie->setDateLimiteInscription(new \DateTime());
 
@@ -215,38 +213,47 @@ class SortieController extends AbstractController
         SortieRepository $sortieRepository,
         EntityManagerInterface $entityManager,
         Security $security,
-        int $id = null
-    ) : Response {
+        int $id
+    ): Response {
+        // la je récupére la sortie par son id
         $sortie = $sortieRepository->find($id);
 
+        // ici je verifie si la sortie existe
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie n\'existe pas !');
         }
 
+        // je récupére l'utilisateur actuel
         $participant = $security->getUser();
+
+        // je verifie si l'utilisateur est connecté
         if (!$participant instanceof Participant) {
             $this->addFlash('error', 'Vous devez être connecté(e) pour vous inscrire à une sortie.');
             return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
 
+        // je verifie la si l'utilisateur est déjà inscrit
         if ($sortie->getParticipants()->contains($participant)) {
             $this->addFlash('error', 'Vous êtes déjà inscrit à cette sortie.');
-        } else {
-            $nbrParticipantsActuels = $sortie->getParticipants()->count();
-            $nbrInscriptionsMax = $sortie->getNbInscriptionMax();
-
-            if ($nbrParticipantsActuels >= $nbrInscriptionsMax) {
-                $this->addFlash('error', 'Le nombre maximum d\'inscriptions est atteint pour cette sortie.');
-            } else {
-                $sortie->addParticipant($participant);
-                $entityManager->persist($sortie);
-                $entityManager->flush();
-                $this->addFlash('success', 'Vous êtes inscrit avec succès à la sortie ' . $sortie->getNom());
-            }
+            return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
+
+        // je verifie aussi si le nombre maximum de participants est atteint
+        if ($sortie->getParticipants()->count() >= $sortie->getNbInscriptionMax()) {
+            $this->addFlash('error', 'Le nombre maximum d\'inscriptions est atteint pour cette sortie.');
+            return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
+        }
+
+        // j'ajouter l'utilisateur à la sortie
+        $sortie->addParticipant($participant);
+        $entityManager->persist($sortie);
+        $entityManager->flush();
+
+
+        $this->addFlash('success', 'Vous êtes inscrit avec succès à la sortie ' . $sortie->getNom());
+
         return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
     }
-
 
     #[Route('/deinscrire/{id}', name: 'deinscrire', requirements: ['id' => '\d+'])]
     public function deinscrireSortie(
