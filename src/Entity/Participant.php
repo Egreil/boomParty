@@ -62,7 +62,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $telephone = null;
 
     #[Assert\NotBlank]
-    #[Assert\Length(max: 50, maxMessage: "Max 50 !")]
+    #[Assert\Length(max: 50, maxMessage: "Max 50 !",min:4,minMessage: "le pseudo doit avoir minimum 4 caractères")]
     #[ORM\Column(length: 50, nullable: false,unique: true)]
 
     private ?string $pseudo = null;

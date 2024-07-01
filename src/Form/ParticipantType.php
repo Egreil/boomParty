@@ -4,9 +4,11 @@ namespace App\Form;
 
 use App\Entity\Participant;
 use App\Entity\Sortie;
-use Doctrine\DBAL\Types\TextType;
+
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -24,7 +26,6 @@ class ParticipantType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email'
             ])
-            ->add('roles' ,)
             ->add('password', PasswordType::class, [
                 'label' => 'Mot de passe',
                 'attr' => ['autocomplete' => 'new-password'],
@@ -47,12 +48,6 @@ class ParticipantType extends AbstractType
             ->add('pseudo', TextType::class, [
                 'label' => 'Votre pseudo'
             ])
-            ->add('dateCreation', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('dateModification', null, [
-                'widget' => 'single_text',
-            ])
             ->add('image', FileType::class, [
                 'mapped' => false,
                 'constraints' => [
@@ -64,6 +59,9 @@ class ParticipantType extends AbstractType
                         ]
                     )
                 ]
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Valider'
             ])
         ;
     }

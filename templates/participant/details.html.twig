@@ -56,5 +56,10 @@
                 </div>
             </div>
         </div>
+        {% if participant.id == app.user.id %}
+        <div>
+            <a href={{ path ('participant_update') }}>Update</a>
+        </div>
+        {% endif %}
     </div>
 {% endblock %}

@@ -43,9 +43,10 @@ class ParticipantController extends AbstractController
     ){
 
         $participant=$this->getUser();
-        if(!$participant){
-            $participant=$participantRepository->findAll()[1];
-        }
+//        dd($participant);
+//        if(!$participant){
+//            $participant=$participantRepository->findAll()[1];
+//        }
         $participantForm=$this->createForm(ParticipantType::class,$participant);
         $participantForm->handleRequest($request);
         $file = $participantForm->get('image')->getData();
