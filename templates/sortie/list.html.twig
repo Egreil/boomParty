@@ -2,6 +2,12 @@
 
 {% block body %}
     <div class="container mt-5">
+        <div class="container d-flex justify-content-end mb-3">
+            <div class="bg-light border p-2">
+                <div><span>Date du jour : {{ "now"|date("d/m/Y") }}</span></div> <!-- Affiche la date du jour -->
+                <div><span>Participant : {{ app.user.nom }}</span></div> <!-- Affiche le nom de l'utilisateur connecté -->
+            </div>
+        </div>
         <div class="mb-3">
             <div class="bg-light border p-2">
                 {# Formulaire de tri #}
@@ -31,7 +37,7 @@
                                         {{ form_label(filtreForm.dateDebut, null, {'label_attr': {'class': 'col-form-label'}}) }}
                                     </div>
                                     <div class="col-lg-8">
-                                        {{ form_widget(filtreForm.dateDebut, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_widget(filtreForm.dateDebut) }}
                                     </div>
                                 </div>
                             </div>
@@ -41,7 +47,7 @@
                                         {{ form_label(filtreForm.dateFin, null, {'label_attr': {'class': 'col-form-label custom-label-class'}}) }}
                                     </div>
                                     <div class="col-lg-8">
-                                        {{ form_widget(filtreForm.dateFin, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_widget(filtreForm.dateFin) }}
                                     </div>
                                 </div>
                             </div>
