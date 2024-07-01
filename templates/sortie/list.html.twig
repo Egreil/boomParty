@@ -9,7 +9,6 @@
             </div>
         </div>
 
-
         <div class="d-flex justify-content-start mb-3">
             <div class="bg-light border p-2">
                 {# Formulaire de tri #}
@@ -90,13 +89,10 @@
                         <td>{{ sortie.participants | length }} /{{ sortie.nbInscriptionMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
                         <td>
-                            {% set userParticipates = false %}
-                            {% for participant in sortie.participants %}
-                                {% if participant.id == app.user.id %}
-                                    {% set userParticipates = true %}
-                                    <span class="badge bg-primary">Inscrit</span>
-                                {% endif %}
-                            {% endfor %}
+                            {% set userParticipates = sortie.participants.contains(app.user) %}
+                            {% if userParticipates %}
+                                <span class="badge bg-primary">Inscrit</span>
+                            {% endif %}
                         </td>
                         <td>{{ sortie.organisateur.nom }}</td>
                         <td>
@@ -106,11 +102,10 @@
                             {% endif %}
 
                             {% if userParticipates %}
-                                <a href="{{ path('sortie_details', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Afficher</a>
-                                <a href="#" class="btn btn-sm btn-danger">Se désister</a>
+                                <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Afficher</a>
+                                <a href="{{ path('sortie_deinscrire', {'id': sortie.id}) }}" class="btn btn-sm btn-danger">Se désister</a>
                             {% else %}
-                                <a href="{{ path('sortie_details', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Afficher</a>
-                                <a href="#" class="btn btn-sm btn-success">S'inscrire</a>
+                                <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-sm btn-success">S'inscrire</a>
                             {% endif %}
                         </td>
                     </tr>

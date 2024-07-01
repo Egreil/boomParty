@@ -3,11 +3,13 @@
 namespace App\Form;
 
 use App\Entity\Campus;
+use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Entity\Ville;
 use App\Repository\CampusRepository;
+use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\VilleRepository;
@@ -15,6 +17,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -50,23 +53,6 @@ class SortieType extends AbstractType
                 'attr' => ['class' => 'form-control']
             ])
 
-            ->add('enregistrer', SubmitType::class, [
-                'label' => 'Enregistrer',
-                'attr' => ['class' => 'btn btn-primary mt-3']
-            ])
-            ->add('publier', SubmitType::class, [
-                'label' => 'Publier la sortie',
-                'attr' => ['class' => 'btn btn-success mt-3']
-            ])
-            ->add('supprimer', SubmitType::class, [
-                'label' => 'Supprimer la sortie',
-                'attr' => ['class' => 'btn btn-success mt-3']
-            ])
-            ->add('annuler', SubmitType::class, [
-                'label' => 'Annuler',
-                'attr' => ['class' => 'btn btn-danger mt-3']
-            ])
-
 
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
@@ -98,6 +84,13 @@ class SortieType extends AbstractType
                         ->orderBy('v.nom', 'ASC');
                 }
             ])
+
+//            ->add('etat', EntityType::class, [
+//                'class' => Etat::class,
+//                'mapped' => false,
+//                'choice_label'=>'nom',
+//                'attr' => ['class' => 'form-control'],
+//            ])
             ->add('lieuRue', null, [
                 'mapped' => false,
             ])
@@ -110,12 +103,11 @@ class SortieType extends AbstractType
             ->add('villeCodePostal', null, [
                 'mapped' => false,
             ])
+//
 
 
 
-//            ->add('etat', null,[
-//                'attr' => ['class' => 'form-control']
-//            ])
+
 //
 //            ->add('participant', EntityType::class, [
 //                'class' => Participant::class,
