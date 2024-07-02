@@ -67,6 +67,11 @@
                     <div class="text-body">{{ participant.actif ? 'Oui' : 'Non' }}</div>
                 </div>
 
+                {% if participant.id == app.user.id %}
+                    <div><a href="{{ path("participant_update") }}">Update</a></div>
+                {% endif %}
+
+
             </div>
         </div>
     </div>
