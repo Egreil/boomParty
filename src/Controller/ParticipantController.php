@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
+use App\Service\SauvegardeImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,7 +39,8 @@ class ParticipantController extends AbstractController
     public function update(
         EntityManagerInterface $entityManager,
         ParticipantRepository $participantRepository,
-        Request $request
+        Request $request,
+        SauvegardeImageService $fileUploader
     ){
 
         $participant=$this->getUser();
@@ -48,12 +50,17 @@ class ParticipantController extends AbstractController
 //        }
         $participantForm=$this->createForm(ParticipantType::class,$participant);
         $participantForm->handleRequest($request);
-        $file = $participantForm->get('image')->getData();
+
+
 
 
 
         if($participantForm->isSubmitted() && $participantForm->isValid()){
-            dd($file);
+
+            $file = $participantForm->get('image')->getData();
+            $newFilename = $fileUploader->RenomerImage($file, $this->getParameter('profil_image_directory'), $participant->getPseudo());
+            //setté le nouveau nom dans l'objet
+            $participant->setImage($newFilename);
             //TODO empêcher la modification d'attributs inaccessibles
             $entityManager ->persist($participant);
             $entityManager->flush();

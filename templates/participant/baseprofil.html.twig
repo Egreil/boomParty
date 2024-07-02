@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block title %}{% endblock %}
+{% block titre %}{{ block('title') }}{% endblock %}
+{% block body %}
+    {% if participant.image %}
+    <div class="col-12 col-md-3 mb-3 mb-md-0 ">
+
+            <img class="photoProfil" src={% block photo %}{% endblock %}>
+    </div>
+    {% endif %}
+    <div >
+        {% block infos %}{% endblock %}
+    </div>
+{% endblock %}

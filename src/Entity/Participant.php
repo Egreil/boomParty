@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -11,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 
@@ -27,7 +27,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\Email(message: "Adresse mail invalide")]
     #[Assert\Length(max: 180,maxMessage:"max 180 caractères")]
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(length: 180, /*unique:true*/)]
     private ?string $email = null;
 
     /**
@@ -42,7 +42,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank]
     #[Assert\Length(max: 50, maxMessage: "Max 50 !")]
-    #[Assert\Regex("[a-zA-Z0-9]+")]
+    #[Assert\Regex(pattern: '/^[a-zA-Z0-9]+$/i',htmlPattern:"[a-zA-Z0-9]+$")]
     #[ORM\Column]
     private ?string $password = null;
 
@@ -63,9 +63,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank]
     #[Assert\Length(max: 50, maxMessage: "Max 50 !",min:4,minMessage: "le pseudo doit avoir minimum 4 caractères")]
-    #[ORM\Column(length: 50, nullable: false,unique: true)]
-
+    #[ORM\Column(length: 50, nullable: false,/*unique:true*/ )]
     private ?string $pseudo = null;
+
+    #[ORM\Column]
+    private ?string $image = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
@@ -86,6 +88,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $actif = null;
 
+
+
     /**
      * @var Collection<int, sortie>
      */
@@ -98,10 +102,20 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         $this->sortiesOrganisees = new ArrayCollection();
     }
 
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setImage(?string $image): void
+    {
+        $this->image = $image;
     }
 
     public function getEmail(): ?string

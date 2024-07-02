@@ -31,7 +31,7 @@ class ParticipantType extends AbstractType
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez saisir votre mot de passe']),
-                    new Length(['min' => 8,
+                    new Length(['min' => 4,
                         'minMessage'=> 'Votre mot de passe doit avoir au minimum {{limit}} charactéres',
                         'max' => 4096,
                         ]),

@@ -1,5 +1,13 @@
-{% block body %}
-    <h2>Modification de vos informations</h2>
+{% extends 'participant/baseprofil.html.twig' %}
+
+
+{% block title %}Modification de vos informations{% endblock %}
+{% block photo %}
+"{{ asset('images/profil/'~participant.image) }}" alt="image de profil de {{ participant.pseudo }}"
+{% endblock %}
+
+{% block infos %}
+
     <div>
         <div>
 {#            <img src="{{ image }}" alt="image de profil de {{ participant.pseudo }}">#}
@@ -14,30 +22,32 @@
 {#            <p>Campus:</p>#}
 {#            {{ participant.campus.nom }}#}
 {#            <p>Pseudo:</p>#}
-{#            {{ form_row(form.pseudo) }}#}
-{#            {{ form_row(form.image) }}#}
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            {{ form_end(form) }}
-            <form>
-                <div>
-                {% if app.user %}
-                    <div>
-                        <label for="ancienMDP">Ancien mot de passe :</label>
-                        <input id="ancienMDP" type="password">
-                    </div>
-                {% endif %}
-                    <div>
-                        <label>Nouveau mot de passe</label>
-                        <input id="ancienMDP" type="password">
-                    </div>
-                    <div>
-                        <label>Confirmation du mot de passe</label>
-                        <input id="ancienMDP" type="password">
-                    </div>
 
-                </div>
-            </form>
+            {{ form_start(form) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.prenom) }}
+            {{ form_row(form.telephone) }}
+            {{ form_row(form.image) }}
+            {{ form_end(form) }}
+{#            <form>#}
+{#                <div>#}
+{#                {% if app.user %}#}
+{#                    <div>#}
+{#                        <label for="ancienMDP">Ancien mot de passe :</label>#}
+{#                        <input id="ancienMDP" type="password">#}
+{#                    </div>#}
+{#                {% endif %}#}
+{#                    <div>#}
+{#                        <label>Nouveau mot de passe</label>#}
+{#                        <input id="ancienMDP" type="password">#}
+{#                    </div>#}
+{#                    <div>#}
+{#                        <label>Confirmation du mot de passe</label>#}
+{#                        <input id="ancienMDP" type="password">#}
+{#                    </div>#}
+
+{#                </div>#}
+{#            </form>#}
         </div>
     </div>
 {% endblock %}
