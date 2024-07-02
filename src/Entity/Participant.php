@@ -66,7 +66,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50, nullable: false,/*unique:true*/ )]
     private ?string $pseudo = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?string $image = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
