@@ -96,56 +96,55 @@ class SortieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function findSortiesByFilters($nom,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse,$user)
+    public function findSortiesByFilters($data,$user)
+    //$nom,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse,$user)
     {
+
         $qb = $this->createQueryBuilder('s');
 
-        if ($campus) {
+        if ($data['Campus']) {
             $qb->andWhere('s.campus = :campus')
-                ->setParameter('campus', $campus);
+                ->setParameter('campus', $data['Campus']);
         }
 
-        if ($nom) {
+        if ($data['nom']) {
             $qb->andWhere('s.nom LIKE :nom')
-                ->setParameter('nom', '%'.$nom.'%');
+                ->setParameter('nom', '%'.$data['nom'].'%');
         }
 
-        if ($dateDebut && $dateFin) {
+        if ($data['dateDebut']  && $data['dateFin'] ) {
             $qb->andWhere('s.dateHeureDebut BETWEEN :dateDebut AND :dateFin')
-                ->setParameter('dateDebut', $dateDebut)
-                ->setParameter('dateFin', $dateFin);
-        } elseif ($dateDebut) {
+                ->setParameter('dateDebut', $data['dateDebut'])
+                ->setParameter('dateFin', $data['dateFin']);
+        } elseif ($data['dateDebut']) {
             $qb->andWhere('s.dateHeureDebut >= :dateDebut')
-                ->setParameter('dateDebut', $dateDebut);
-        } elseif ($dateFin) {
+                ->setParameter('dateDebut', $data['dateDebut']);
+        } elseif ($data['dateFin']) {
             $qb->andWhere('s.dateHeureDebut <= :dateFin')
-                ->setParameter('dateFin', $dateFin);
+                ->setParameter('dateFin', $data['dateFin']);
         }
 
-//        if ($organisateur) {
-//            $qb->andWhere('s.organisateur = :user')
-//                ->setParameter('user', $user);
-//        }
+        if ($data['organisateur']) {
+            $qb->andWhere('s.organisateur = :user')
+                ->setParameter('user', $user);
+        }
 
-//        if ($inscrit) {
-//            $qb->andWhere(':user MEMBER OF s.participants')
-//                ->setParameter('user', $user);
-//        }
-//
-//        if ($nonInscrit) {
-//            $qb->andWhere(':user NOT MEMBER OF s.participants')
-//                ->setParameter('user', $user);
-//        }
-//
-//        if ($sortiePasse) {
-//            $qb->andWhere('s.dateHeureDebut < :now')
-//                ->setParameter('now', new \DateTime());
-//        } else {
-//            $qb->andWhere('s.dateHeureDebut >= :now')
-//                ->setParameter('now', new \DateTime());
-//        }
+        if ($data['inscrit']) {
+            $qb->andWhere(':user MEMBER OF s.participants')
+                ->setParameter('user', $user);
+        }
 
+        if ($data['nonInscrit']) {
+            $qb->andWhere(':user NOT MEMBER OF s.participants')
+                ->setParameter('user', $user);
+        }
 
+        if ($data['sortiePasse']) {
+            $qb->andWhere('s.dateHeureDebut < :now')
+                ->setParameter('now', new \DateTime());
+        }
+
+        //dd($qb->getQuery()->getResult());
 
         return $qb->getQuery()->getResult();
     }
