@@ -15,8 +15,6 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 
 #[Route('/sortie', name: 'sortie_')]
@@ -36,14 +34,10 @@ class SortieController extends AbstractController
     ): Response {
         if ($id) {
             $sortie = $sortieRepository->find($id);
+
             if (!$sortie) {
                 throw $this->createNotFoundException('La sortie n\'existe pas !');
             }
-            if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
-                return $this->redirectToRoute('sortie_list');
-            }
-
-
             $isUpdate = true;
         } else {
             $sortie = new Sortie();
@@ -67,7 +61,7 @@ class SortieController extends AbstractController
                 $this->addFlash('success', 'La sortie ' . $sortie->getNom() . ' a été enregistrée avec succès.');
 
             } elseif ($action === 'publier') {
-                // Publier la sortie
+                // Publier la sortie si je click sur le bouton publier
                 $sortie->setDateHeureDebut(new \DateTime());
                 $sortie->setDateLimiteInscription(new \DateTime());
 
@@ -108,18 +102,17 @@ class SortieController extends AbstractController
         if($filtreForm->isSubmitted()){
             // Récupérer les données filtrées
             $data = $filtreForm->getData();
-            $dateDebut = $data['dateDebut'] ?? null;
-            $dateFin = $data['dateFin'] ?? null;
-            $organisateur = $data['organisateur'] ?? false;
-            $inscrit = $data['inscrit'] ?? false;
-            $nonInscrit = $data['nonInscrit'] ?? false;
-            $sortiePasse = $data['sortiePasse'] ?? false;
-            $campus = $data['Campus'] ?? null;
-            $nom = $data['nom'] ?? '';
-
-            //dd($date);
-
-            $sorties = $sortieRepository->findSortiesByFilters($dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse, $campus, $nom, $this->getUser());
+//            $campus = $data['Campus'] ?? null;
+//            $nom = $data['nom'] ?? '';
+//            $dateDebut = $data['dateDebut'] ?? null;
+//            $dateFin = $data['dateFin'] ?? null;
+//            $organisateur = $data['organisateur'] ?? false;
+//            $inscrit = $data['inscrit'] ?? false;
+//            $nonInscrit = $data['nonInscrit'] ?? false;
+//            $sortiePasse = $data['sortiePasse'] ?? false;
+            //dd($data);
+            $sorties = $sortieRepository->findSortiesByFilters($data, $this->getUser());
+            //$nom,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse,$this->getUser());
 
         }else {
             // Si le formulaire n'est pas soumis, affichez toutes les sorties
@@ -143,13 +136,8 @@ class SortieController extends AbstractController
     ) : Response
     {
         $sortie = $sortieRepository->find($id);
-
         if(!$sortie){
             return $this->json(['error' => 'Sortie introuvable'], Response::HTTP_NOT_FOUND);
-        }
-        //Verifier que l'organisateur est bien la personne qui fait l'annulation
-        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
-            return $this->redirectToRoute('sortie_list');
         }
         return $this->render('sortie/annuler.html.twig', [
             'sortie' => $sortie,
@@ -166,27 +154,20 @@ class SortieController extends AbstractController
     ): Response
     {
         $sortie = $sortieRepository->find($id);
-
-        //Verifier que la sortie existe
         if(!$sortie){
             $this->addFlash('error', 'Sortie introuvable');
             return $this->redirectToRoute('sortie_list');
         }
-        //Verifier que l'organisateur est bien la personne qui fait l'annulation
-        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
-            return $this->redirectToRoute('sortie_list');
-        }
 
         $motif=$request->request->get('motif');
-        //Le motif doit être renseigné
+
         if(!$motif) {
-            $this->addFlash('error', 'Le motif doit être renseigné');
+            $this->addFlash('error', 'Le motif doit etre renseigner');
             return $this->redirectToRoute('sortie_list');
         }
         $sortie->setInfosSortie($motif);
 
         $etatSortieAnnulee = $etatRepository->findOneBy(['libelle' => 'Annulée']);
-        //redirection en absence du statut annulé
         if(!$etatSortieAnnulee){
             $this->addFlash('error', 'Etat "Annulée" non trouvée !');
             return $this->redirectToRoute('sortie_list');
@@ -231,38 +212,47 @@ class SortieController extends AbstractController
         SortieRepository $sortieRepository,
         EntityManagerInterface $entityManager,
         Security $security,
-        int $id = null
-    ) : Response {
+        int $id
+    ): Response {
+        // la je récupére la sortie par son id
         $sortie = $sortieRepository->find($id);
 
+        // ici je verifie si la sortie existe
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie n\'existe pas !');
         }
 
+        // je récupére l'utilisateur actuel
         $participant = $security->getUser();
+
+        // je verifie si l'utilisateur est connecté
         if (!$participant instanceof Participant) {
             $this->addFlash('error', 'Vous devez être connecté(e) pour vous inscrire à une sortie.');
             return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
 
+        // je verifie la si l'utilisateur est déjà inscrit
         if ($sortie->getParticipants()->contains($participant)) {
             $this->addFlash('error', 'Vous êtes déjà inscrit à cette sortie.');
-        } else {
-            $nbrParticipantsActuels = $sortie->getParticipants()->count();
-            $nbrInscriptionsMax = $sortie->getNbInscriptionMax();
-
-            if ($nbrParticipantsActuels >= $nbrInscriptionsMax) {
-                $this->addFlash('error', 'Le nombre maximum d\'inscriptions est atteint pour cette sortie.');
-            } else {
-                $sortie->addParticipant($participant);
-                $entityManager->persist($sortie);
-                $entityManager->flush();
-                $this->addFlash('success', 'Vous êtes inscrit avec succès à la sortie ' . $sortie->getNom());
-            }
+            return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
+
+        // je verifie aussi si le nombre maximum de participants est atteint
+        if ($sortie->getParticipants()->count() >= $sortie->getNbInscriptionMax()) {
+            $this->addFlash('error', 'Le nombre maximum d\'inscriptions est atteint pour cette sortie.');
+            return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
+        }
+
+        // j'ajouter l'utilisateur à la sortie
+        $sortie->addParticipant($participant);
+        $entityManager->persist($sortie);
+        $entityManager->flush();
+
+
+        $this->addFlash('success', 'Vous êtes inscrit avec succès à la sortie ' . $sortie->getNom());
+
         return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
     }
-
 
     #[Route('/deinscrire/{id}', name: 'deinscrire', requirements: ['id' => '\d+'])]
     public function deinscrireSortie(
@@ -305,9 +295,6 @@ class SortieController extends AbstractController
         $sortie = $sortieRepository->find($id);
         if (!$sortie) {
             throw $this->createNotFoundException('La sortie n\'existe pas.');
-            return $this->redirectToRoute('sortie_list');
-        }
-        if($this->getUser()->getId()!=$sortie->getOrganisateur()->getId()){
             return $this->redirectToRoute('sortie_list');
         }
         $entityManager->remove($sortie);

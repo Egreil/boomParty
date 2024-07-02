@@ -30,6 +30,7 @@ class ParticipantController extends AbstractController
         else{
             $participant=
                 $this->getUser();
+                //dd($participant);
         }
         return $this->render('participant/details.html.twig', [
             'participant' => $participant,
@@ -44,10 +45,9 @@ class ParticipantController extends AbstractController
     ){
 
         $participant=$this->getUser();
-//        dd($participant);
-//        if(!$participant){
-//            $participant=$participantRepository->findAll()[1];
-//        }
+        if(!$participant){
+            $participant=$participantRepository->findAll()[1];
+        }
         $participantForm=$this->createForm(ParticipantType::class,$participant);
         $participantForm->handleRequest($request);
 

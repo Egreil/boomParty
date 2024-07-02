@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LieuRepository::class)]
@@ -16,21 +15,16 @@ class Lieu
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 255, maxMessage: "Max 255 !")]
+
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 255, maxMessage: "Max 255 !")]
     #[ORM\Column(length: 255)]
     private ?string $rue = null;
 
-    #[Assert\NotBlank]
     #[ORM\Column]
     private ?float $latitude = null;
 
-    #[Assert\NotBlank]
     #[ORM\Column]
     private ?float $longitude = null;
 
