@@ -35,8 +35,7 @@ class ParticipantController extends AbstractController
             $participant=$participantRepository->find($id);
         }
         else{
-            $participant=
-                $this->getUser();
+            $participant= $this->getUser();
         }
 
         $participantForm = $this->createForm(ParticipantType::class,$participant);

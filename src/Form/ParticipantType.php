@@ -86,10 +86,8 @@ class ParticipantType extends AbstractType
             ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
-                'mapped' => false,
                 'choice_label' => 'nom',
                 'attr' => ['class' => 'form-control'],
-                'placeholder' => 'Choisissez un campus',
                 'query_builder' => function ( CampusRepository $campusRepository) {
                     return $campusRepository
                         ->createQueryBuilder('c')
