@@ -92,8 +92,11 @@ class AdminController extends AbstractController
     {
         if($id){
             $participant=$participantRepository->find($id);
-            $em->remove($participant);
-            $em->flush();
+            if($participant){
+                $em->remove($participant);
+                $em->flush();
+            }
+
         }
         return $this->render('participant/list.html.twig', [
             'participants' => $participantRepository->findAll(),
