@@ -45,14 +45,14 @@ class ParticipantController extends AbstractController
         if($participantForm->isSubmitted() && $participantForm->isValid()){
 
             $password = $participantForm->get('password')->getData();
-
-            $participant->setPassword(
-               $userPasswordHasher->hashPassword(
-                    $participant,
-                   $participantForm->get('password')->getData()
-                )
-            );
-
+            if($password !== null){
+                $participant->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $participant,
+                        $participantForm->get('password')->getData()
+                    )
+                );
+            }
 
             $file = $participantForm->get('image')->getData();
             //dd($file);

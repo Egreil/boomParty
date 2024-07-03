@@ -40,9 +40,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
 
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 50, maxMessage: "Max 50 !")]
-    #[Assert\Regex(pattern: '/^[a-zA-Z0-9]+$/i',htmlPattern:"[a-zA-Z0-9]+$")]
     #[ORM\Column]
     private ?string $password = null;
 

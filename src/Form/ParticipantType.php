@@ -2,8 +2,11 @@
 
 namespace App\Form;
 
+use App\Entity\Campus;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Repository\CampusRepository;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -15,6 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class ParticipantType extends AbstractType
 {
@@ -25,17 +29,31 @@ class ParticipantType extends AbstractType
                 'label' => 'Email',
                 'attr' => ['class' => 'form-control'],
             ])
-            ->add('password', PasswordType::class, [
-                'required' => true,
-                'label' => 'Mot de passe',
-                'attr' => ['autocomplete' => 'new-password','class' => 'form-control','required' => 'required'],
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'attr' => ['class' => 'form-control'],
+                ],
+                'second_options' => [
+                    'label' => 'Confirmer mot de passe',
+                    'attr' => ['class' => 'form-control'],
+                ],
+                'invalid_message' => 'Les mots de passe doivent correspondre.',
+                'mapped' => false,
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez saisir votre mot de passe']),
-                    new Length(['min' => 4,
-                        'minMessage'=> 'Votre mot de passe doit avoir au minimum {{limit}} charactéres',
+                    new Length([
+                        'min' => 4,
+                        'minMessage' => 'Votre mot de passe doit avoir au minimum {{ limit }} caractères',
                         'max' => 4096,
-                        ]),
-                ]])
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[a-zA-Z0-9]+$/',
+                        'htmlPattern' => '[a-zA-Z0-9]+$',
+                        'message' => 'Votre mot de passe ne doit contenir que des lettres et des chiffres.',
+                    ]),
+                ],
+            ])
             ->add('nom', TextType::class, [
                 'label' => 'Nom',
                 'attr' => ['class' => 'form-control'],
@@ -65,6 +83,19 @@ class ParticipantType extends AbstractType
                         ]
                     )
                 ]
+            ])
+            ->add('campus', EntityType::class, [
+                'class' => Campus::class,
+                'mapped' => false,
+                'choice_label' => 'nom',
+                'attr' => ['class' => 'form-control'],
+                'placeholder' => 'Choisissez un campus',
+                'query_builder' => function ( CampusRepository $campusRepository) {
+                    return $campusRepository
+                        ->createQueryBuilder('c')
+                        ->addOrderBy('c.nom');
+                }
+
             ])
         ;
     }

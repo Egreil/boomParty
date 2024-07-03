@@ -1,7 +1,7 @@
 {% extends 'participant/baseprofil.html.twig' %}
 {% block title %}
         {% if participant.id == app.user.id %}
-            Mon profil
+            Mon profil {{ participant.pseudo }}
             {% else %}
                 {{ participant.pseudo }}
         {% endif %}
@@ -50,16 +50,33 @@
                 </div>
                 <div class="col-lg-6">
                         <div class="mb-3 row align-items-center">
-                                {{ form_row(participantForm.password) }}
+                                {{ form_row(participantForm.image) }}
+                        </div>
+                </div>
+        </div>
+        <div class="mb-3 d-flex justify-content-center align-items-center">
+                <div class="col-lg-6">
+                        {{ form_row(participantForm.campus) }}
+                </div>
+        </div>
+        <div class="row">
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.password.first) }}
+                        </div>
+                </div>
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.password.second) }}
                         </div>
                 </div>
         </div>
 
-        <div class="mb-3">
-            {{ form_row(participantForm.image) }}
+        <div class="mb-3 d-flex justify-content-center align-items-center">
+                <button type="submit" class="btn btn-primary">Modifier le Profil</button>
         </div>
 
-       <button type="submit" class="btn btn-primary">Modifier le Profil</button>
+
         {{ form_end(participantForm) }}
 </div>
 
