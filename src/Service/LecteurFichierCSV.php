@@ -5,10 +5,15 @@ namespace App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class LecteurFichierCSV
 {
-    public function lireFichierCSV(EntityManagerInterface $em,string $filepath,MailerInterface $mailer=null){
+    public function lireFichierCSV(EntityManagerInterface $em,
+                                   string $filepath,
+                                   MailerInterface $mailer=null,
+                                   UserPasswordHasherInterface $userPasswordHasher
+    ){
         $inscriptionMailingService=new InscriptionMailingService();
         //Ourvrir le fichier
         if(($stream=fopen($filepath,'r'))!=FALSE){
@@ -19,14 +24,11 @@ class LecteurFichierCSV
             while (($datas=fgetcsv($stream))!=false){
                 $data=$this->associerDonneeValeur($datas,$titre);
                 var_dump($data);
-                $participant=$inscriptionMailingService->creationCompteVierge($em,$data,$mailer);
+                $participant=$inscriptionMailingService->creationCompteVierge($em,$data,$mailer,null,$userPasswordHasher);
             }
 
 
-        };
-        //Ouvrir le fichier s'il est de format csv, à vérifier dans le formulaire
-
-        //Mettre les données dans les bonnes cases
+        }
     }
 
     public function associerDonneeValeur(array $datas,array $titres){

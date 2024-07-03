@@ -7,11 +7,17 @@ use App\Entity\Participant;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class InscriptionMailingService
 {
 
-    public function creationCompteVierge(EntityManagerInterface $em, array $datas=null,MailerInterface $mailer=null,Participant $participant=null){
+    public function creationCompteVierge(EntityManagerInterface $em,
+                                         array $datas=null,
+                                         MailerInterface $mailer=null,
+                                         Participant $participant=null,
+    UserPasswordHasherInterface $userPasswordHasher=null
+    ){
         //var_dump($datas['Campus']);
 
         if(!$participant && $datas){
@@ -23,8 +29,10 @@ class InscriptionMailingService
                 ->setCampus($campus)
                 ->setTelephone($datas['Telephone']);
         }
+        if($userPasswordHasher){
+            $this->initialiserParticipant($participant,$userPasswordHasher);
+        }
 
-        $this->initialiserParticipant($participant);
         var_dump($participant);
        if($mailer){
 
@@ -51,12 +59,15 @@ class InscriptionMailingService
             $mailer->send($email);
 
     }
-    public function initialiserParticipant(Participant $participant){
+    public function initialiserParticipant(Participant $participant,
+                                           UserPasswordHasherInterface $userPasswordHasher){
         $participant->setPseudo($participant->getPrenom()[0].$participant->getNom())
             ->setDateCreation(new \DateTime())
             ->setDateModification(new \DateTime())
             ->setActif(true)
             ->setRoles(['ROLE_USER'])
-            ->setPassword('password');
+            ->setPassword(
+                $userPasswordHasher->hashPassword($participant, 'password')
+            );
     }
 }

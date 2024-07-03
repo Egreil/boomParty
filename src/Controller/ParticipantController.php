@@ -35,7 +35,7 @@ class ParticipantController extends AbstractController
         else{
             $participant= $this->getUser();
         }
-        $participantForm=$this->createForm(CreerProfilParticipantType::class,$participant);
+        $participantForm=$this->createForm(ParticipantType::class,$participant);
         $participantForm->handleRequest($request);
 
         if($participantForm->isSubmitted() && $participantForm->isValid()){
