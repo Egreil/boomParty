@@ -40,9 +40,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
 
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 50, maxMessage: "Max 50 !")]
-    #[Assert\Regex(pattern: '/^[a-zA-Z0-9]+$/i',htmlPattern:"[a-zA-Z0-9]+$")]
     #[ORM\Column]
     private ?string $password = null;
 
@@ -63,7 +60,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank]
     #[Assert\Length(max: 50, maxMessage: "Max 50 !",min:4,minMessage: "le pseudo doit avoir minimum 4 caractères")]
-    #[ORM\Column(length: 50, nullable: false,/*unique:true*/ )]
+    #[ORM\Column(length: 50, nullable: false, unique:true )]
     private ?string $pseudo = null;
 
     #[ORM\Column(nullable: true)]
