@@ -34,8 +34,7 @@ class LecteurFichierCSV
         for ($i=0;$i<count($datas);$i++){
             $tab[$titres[$i]]=$datas[$i];
         }
-        var_dump($tab);
+        //var_dump($tab);
         return $tab;
-
     }
 }

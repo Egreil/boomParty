@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
-use App\Form\ParticipantType;
+use App\Form\CreerProfilParticipantType;
 use App\Repository\ParticipantRepository;
 use App\Service\SauvegardeImageService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,7 +48,7 @@ class ParticipantController extends AbstractController
         if(!$participant){
             $participant=$participantRepository->findAll()[1];
         }
-        $participantForm=$this->createForm(ParticipantType::class,$participant);
+        $participantForm=$this->createForm(CreerProfilParticipantType::class,$participant);
         $participantForm->handleRequest($request);
 
 

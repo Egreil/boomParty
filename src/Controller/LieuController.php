@@ -21,7 +21,7 @@ class LieuController extends AbstractController
         $longitude=2.3568;
 
         $lieu =$lieuService->createLieu($nom, $rue, $latitude,$longitude);
-        return $this->render('lieu/index.html.twig', [
+        return $this->render('lieu/inscriptionFormulaire.html.twig', [
             'controller_name' => 'LieuController',
             'lieu' => $lieu,
         ]);
