@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\CreerProfilParticipantType;
 use App\Form\CsvType;
+use App\Repository\ParticipantRepository;
 use App\Service\InscriptionMailingService;
 use App\Service\LecteurFichierCSV;
 use App\Service\SauvegardeImageService;
@@ -72,6 +73,47 @@ class AdminController extends AbstractController
             'participantForm'=>$participantForm,
         ]);
 
-
+    }
+    #[Route('/participants', name: 'participants_')]
+    public function afficher(
+        ParticipantRepository $participantRepository,
+    ): Response
+    {
+        return $this->render('participant/list.html.twig', [
+            'participants' => $participantRepository->findAll(),
+        ]);
+    }
+    #[Route('/participant/delete/{id}', name: 'participants_delete',requirements:['id' => '\d+'] )]
+    public function delete(
+        ParticipantRepository $participantRepository,
+        EntityManagerInterface $em,
+        int $id=null
+    ): Response
+    {
+        if($id){
+            $participant=$participantRepository->find($id);
+            $em->remove($participant);
+            $em->flush();
+        }
+        return $this->render('participant/list.html.twig', [
+            'participants' => $participantRepository->findAll(),
+        ]);
+    }
+    #[Route('/descativer/{id}', name: 'participants_desactiver',requirements:['id' => '\d+'])]
+    public function descativer(
+        ParticipantRepository $participantRepository,
+        EntityManagerInterface $em,
+        int $id=null
+    ): Response
+    {
+        if($id){
+            $participant=$participantRepository->find($id);
+            $participant->setActif(false);
+            $em->persist($participant);
+            $em->flush();
+        }
+        return $this->render('participant/list.html.twig', [
+            'participants' => $participantRepository->findAll(),
+        ]);
     }
 }

@@ -33,7 +33,7 @@ class InscriptionMailingService
             $this->initialiserParticipant($participant,$userPasswordHasher);
         }
 
-        var_dump($participant);
+        //var_dump($participant);
        if($mailer){
 
            $this->envoyerMail($mailer,$participant);

@@ -23,7 +23,7 @@ class LecteurFichierCSV
             //Lire la ligne
             while (($datas=fgetcsv($stream))!=false){
                 $data=$this->associerDonneeValeur($datas,$titre);
-                var_dump($data);
+                //var_dump($data);
                 $participant=$inscriptionMailingService->creationCompteVierge($em,$data,$mailer,null,$userPasswordHasher);
             }
 
