@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 
@@ -21,54 +22,56 @@ class ParticipantController extends AbstractController
     #[Route('/details/{id}', name: 'details',requirements: ['id' => '\d+'])]
     public function afficher(
         ParticipantRepository $participantRepository,
-        int $id=null
+        int $id=null,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SauvegardeImageService $fileUploader,
+        UserPasswordHasherInterface $userPasswordHasher
     ): Response
     {
+        //$participant=$this->getUser();
+
         if($id){
             $participant=$participantRepository->find($id);
         }
         else{
             $participant=
                 $this->getUser();
-                //dd($participant);
         }
-        return $this->render('participant/details.html.twig', [
-            'participant' => $participant,
-        ]);
-    }
-    #[Route('/update', name: 'update')]
-    public function update(
-        EntityManagerInterface $entityManager,
-        ParticipantRepository $participantRepository,
-        Request $request,
-        SauvegardeImageService $fileUploader
-    ){
 
-        $participant=$this->getUser();
-        if(!$participant){
-            $participant=$participantRepository->findAll()[1];
-        }
-        $participantForm=$this->createForm(ParticipantType::class,$participant);
+        $participantForm = $this->createForm(ParticipantType::class,$participant);
         $participantForm->handleRequest($request);
-
-
-
-
 
         if($participantForm->isSubmitted() && $participantForm->isValid()){
 
+            $password = $participantForm->get('password')->getData();
+
+            $participant->setPassword(
+               $userPasswordHasher->hashPassword(
+                    $participant,
+                   $participantForm->get('password')->getData()
+                )
+            );
+
+
             $file = $participantForm->get('image')->getData();
-            $newFilename = $fileUploader->RenomerImage($file, $this->getParameter('profil_image_directory'), $participant->getPseudo());
-            //setté le nouveau nom dans l'objet
-            $participant->setImage($newFilename);
-            //TODO empêcher la modification d'attributs inaccessibles
+            //dd($file);
+            if($file !== null){
+                $newFilename = $fileUploader->RenomerImage($file, $this->getParameter('profil_image_directory'), $participant->getPseudo());
+                $participant->setImage($newFilename);
+            }
+
+            $participant->setDateModification(new \DateTime());
             $entityManager ->persist($participant);
             $entityManager->flush();
             return $this->redirectToRoute('sortie_list');
         }
-        return $this->render('participant/update.html.twig', [
+
+
+
+        return $this->render('participant/details.html.twig', [
             'participant' => $participant,
-            'form' => $participantForm
+            'participantForm' => $participantForm->createView(),
         ]);
     }
 

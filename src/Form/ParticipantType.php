@@ -22,11 +22,13 @@ class ParticipantType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Email'
+                'label' => 'Email',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('password', PasswordType::class, [
+                'required' => true,
                 'label' => 'Mot de passe',
-                'attr' => ['autocomplete' => 'new-password'],
+                'attr' => ['autocomplete' => 'new-password','class' => 'form-control','required' => 'required'],
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez saisir votre mot de passe']),
                     new Length(['min' => 4,
@@ -35,25 +37,25 @@ class ParticipantType extends AbstractType
                         ]),
                 ]])
             ->add('nom', TextType::class, [
-                'label' => 'Nom'
+                'label' => 'Nom',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('prenom', TextType::class, [
-                'label' => 'Prenom'
+                'label' => 'Prenom',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('telephone', TextType::class, [
-                    'label'=>'Numéro de téléphone'
+                'label'=>'Numéro de téléphone',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('pseudo', TextType::class, [
-                'label' => 'Votre pseudo'
-            ])
-            ->add('dateCreation', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('dateModification', null, [
-                'widget' => 'single_text',
+                'label' => 'Votre pseudo',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('image', FileType::class, [
+                'required' => false,
                 'mapped' => false,
+                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new Image(
                         [

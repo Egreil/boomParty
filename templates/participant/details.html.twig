@@ -14,65 +14,53 @@
 
 {#sur boostrap non tailwind css#}
 {% block infos %}
-    <div class="container py-4 col-12 col-lg-6 justify-content-center">
-        <div class="bg-white shadow   row  rounded p-4 ">
+<div class="row justify-content-center">
+        {{ form_start(participantForm) }}
 
-            <div class="inline mb-4" >
-
-                {% if participant.id == app.user.id %}
-                    <div class="col-12 col-md-6 mb-3 mb-md-0 infoProfil">
-                        <label class="form-label">Pseudo:</label>
-                        <div class="text-body">{{ participant.pseudo }}</div>
-                    </div>
-                {% endif %}
-
-                <div class="col-12 col-md-6 mb-3 mb-md-0 infoProfil" >
-                    <label class="form-label">Nom:</label>
-                    <div class="text-body">{{ participant.nom }}</div>
+        <div class="row">
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.nom) }}
+                        </div>
                 </div>
-
-
-                <div class="col-12 col-md-6 mb-3 mb-md-0 infoProfil">
-                    <label class="form-label">Prénom:</label>
-                    <div class="text-body">{{ participant.prenom }}</div>
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.prenom) }}
+                        </div>
                 </div>
-
-                <div class="col-12 col-md-6 mb-3 mb-md-0 infoProfil">
-                    <label class="form-label">Email:</label>
-                    <div class="text-body">{{ participant.email }}</div>
-                </div>
-
-                <div class="col-12 col-md-6 mb-3 mb-md-0 infoProfil">
-                    <label class="form-label">Téléphone:</label>
-                    <div class="text-body">{{ participant.telephone ?: 'N/A' }}</div>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0 infoProfil">
-                    <label class="form-label">Date de Création:</label>
-                    <div class="text-body">{{ participant.dateCreation ? participant.dateCreation|date('Y-m-d H:i:s') : 'N/A' }}</div>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0 infoProfil">
-                    <label class="form-label">Date de Modification:</label>
-                    <div class="text-body">{{ participant.dateModification ? participant.dateModification|date('Y-m-d H:i:s') : 'N/A' }}</div>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0 infoProfil">
-                    <label class="form-label">Campus:</label>
-                    <div class="text-body">{{ participant.campus.nom }}</div>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0 infoProfil">
-                    <label class="form-label">Actif:</label>
-                    <div class="text-body">{{ participant.actif ? 'Oui' : 'Non' }}</div>
-                </div>
-
-                {% if participant.id == app.user.id %}
-                    <div><a href="{{ path("participant_update") }}">Update</a></div>
-                {% endif %}
-
-
-            </div>
         </div>
-    </div>
+
+        <div class="row">
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.pseudo) }}
+                        </div>
+                </div>
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.email) }}
+                        </div>
+                </div>
+        </div>
+        <div class="row">
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.telephone) }}
+                        </div>
+                </div>
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.password) }}
+                        </div>
+                </div>
+        </div>
+
+        <div class="mb-3">
+            {{ form_row(participantForm.image) }}
+        </div>
+
+       <button type="submit" class="btn btn-primary">Modifier le Profil</button>
+        {{ form_end(participantForm) }}
+</div>
+
 {% endblock %}
