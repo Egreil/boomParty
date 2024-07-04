@@ -19,7 +19,7 @@ security:
             logout:
                 path: app_logout
                 # where to redirect after logout
-                target: app_login
+                target: sortie_list
 
             remember_me:
                 secret: '%kernel.secret%'
