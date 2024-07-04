@@ -2,16 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Form\LieuType;
 use App\Form\SortieFilterType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
+use App\Service\GeoApiService;
 use App\Service\InscriptionSortieService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,8 +24,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/sortie', name: 'sortie_')]
 class SortieController extends AbstractController
 {
-    public function __construct(private readonly InscriptionSortieService $inscriptionSortieService)
+    public function __construct(
+        private readonly InscriptionSortieService $inscriptionSortieService,
+        GeoApiService $geoApiService,
+    )
     {
+        $this->geoApiService = $geoApiService;
     }
 
     #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'])]
@@ -29,9 +37,11 @@ class SortieController extends AbstractController
     public function createSortie(
         Request $request,
         EntityManagerInterface $entityManager,
-        int $id = null,
-        SortieRepository $sortieRepository
+        SortieRepository $sortieRepository,
+        GeoApiService $geoApiService,
+        int $id = null
     ): Response {
+
         if ($id) {
             $sortie = $sortieRepository->find($id);
 
@@ -47,21 +57,53 @@ class SortieController extends AbstractController
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 
+        // mon appel d'api pour récupérer toutes les villes de France
+//        try {
+//            $villesFrance = $geoApiService->getAllCities();
+//        } catch (\Exception $e) {
+//            $this->addFlash('error', 'Erreur lors de la récupération des villes.');
+//            $villesFrance = [];
+//        }
+
+        // mon formulaire Lieu
+        $lieu = new Lieu();
+        $lieuForm = $this->createForm(LieuType::class, $lieu);
+        $lieuForm->handleRequest($request);
+
+        if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
+
+                // normalement ici je dois recuperer les coordonnes du lieu
+//                $locations = $geoApiService->getLocationsByCity($lieu->getNom());
+//                $lieu->setRue($locations['rue']);
+//                $lieu->setLatitude($locations['latitude']);
+//                $lieu->setLongitude($locations['longitude']);
+
+                $entityManager->persist($lieu);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Le lieu ' . $lieu->getNom() . ' a été créé avec succès.');
+
+        }
+
+        // formulaire pour ma sortie
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $user = $this->getUser();
             $sortie->setOrganisateur($user);
 
+            $sortie->setDateLimiteInscription(new \DateTimeImmutable());
+            $sortie->setDateHeureDebut(new \DateTimeImmutable());
+
             $action = $request->request->get('action');
 
             if ($action === 'enregistrer') {
-                // Enregistrer la sortie sans la publier
+
                 $entityManager->persist($sortie);
                 $entityManager->flush();
 
                 $this->addFlash('success', 'La sortie ' . $sortie->getNom() . ' a été enregistrée avec succès.');
 
             } elseif ($action === 'publier') {
-                // Publier la sortie si je click sur le bouton publier
+
                 $sortie->setDateHeureDebut(new \DateTime());
                 $sortie->setDateLimiteInscription(new \DateTime());
 
@@ -83,8 +125,29 @@ class SortieController extends AbstractController
         return $this->render($template, [
             'sortie' => $sortie,
             'form' => $sortieForm->createView(),
+            'formLieu' => $lieuForm->createView(),
+//            'villesFrance' => $villesFrance,
         ]);
     }
+
+    // je pourrais creer un autre controleur (pas pour le moment , mnt je test ! )
+    #[Route('/api/coords', name: 'api_coords')]
+    public function getCoords(Request $request, GeoApiService $geoApiService): JsonResponse
+    {
+        $lieuNom = $request->query->get('lieu');
+        if (!$lieuNom) {
+            return new JsonResponse(['error' => 'Lieu non spécifié.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $locations = $geoApiService->getLocationsByCity($lieuNom);
+            return new JsonResponse($locations);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
     #[Route('/list', name: 'list')]
     #[Route('/', name: '')]
@@ -102,32 +165,19 @@ class SortieController extends AbstractController
         if($filtreForm->isSubmitted()){
             // Récupérer les données filtrées
             $data = $filtreForm->getData();
-//            $campus = $data['Campus'] ?? null;
-//            $nom = $data['nom'] ?? '';
-//            $dateDebut = $data['dateDebut'] ?? null;
-//            $dateFin = $data['dateFin'] ?? null;
-//            $organisateur = $data['organisateur'] ?? false;
-//            $inscrit = $data['inscrit'] ?? false;
-//            $nonInscrit = $data['nonInscrit'] ?? false;
-//            $sortiePasse = $data['sortiePasse'] ?? false;
-            //dd($data);
             $sorties = $sortieRepository->findSortiesByFilters($data, $this->getUser());
-            //$nom,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse,$this->getUser());
 
         }else {
             // Si le formulaire n'est pas soumis, affichez toutes les sorties
             $sorties = $sortieRepository->findSorties($request);
         }
 
-
         return $this->render('sortie/list.html.twig', [
                 'sorties' => $sorties,
                 'filtreForm' => $filtreForm->createView(),
             ]
-
         );
     }
-
 
     #[Route('/annuler/{id}', name: 'annuler_sortie', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function annulerSortie(
@@ -188,9 +238,10 @@ class SortieController extends AbstractController
     public function detailSortie(
         SortieRepository $sortieRepository,
         int $id=null,
-    ){
+    ) : Response
+    {
         if(!$id) {
-            throw $this->createNotFoundException('Identifiants introuvable');
+            throw $this->createNotFoundException('Identifiant introuvable');
         }
         $sortie = $sortieRepository->find($id);
 
@@ -198,12 +249,16 @@ class SortieController extends AbstractController
             throw $this->createNotFoundException('Cet événement n\'existe pas :(' );
         }
 
+        $json = file_get_contents('https://geo.api.gouv.fr/communes?fields=nom&format=json');
+        $villes=json_decode($json, true);
+        //dd($json);
+
         $sortiesWithPostalCode =$sortieRepository->findSortiesByCityAndPlace();
-//
 //        dd($sortie);
         return $this->render('sortie/details.html.twig',[
             'sortie'=>$sortie,
             'sortiesWithPostalCode'=>$sortiesWithPostalCode,
+            'villes' => $villes
         ]);
     }
 

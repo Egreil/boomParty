@@ -1,7 +1,7 @@
 {% extends 'participant/baseprofil.html.twig' %}
 {% block title %}
         {% if participant.id == app.user.id %}
-            Mon profil {{ participant.pseudo }}
+            Mon profil
             {% else %}
                 {{ participant.pseudo }}
         {% endif %}

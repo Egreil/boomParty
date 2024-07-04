@@ -21,11 +21,12 @@ class SortieFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Campus', EntityType::class, [
+
+            ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'nom',
-                'attr' => ['class' => 'form-control'],
-                'placeholder' => 'Choisissez un campus',
+                'placeholder' => 'Choisir le campus',
+                'attr' => ['class' => 'form-select'],
                 'query_builder' => function ( CampusRepository $campusRepository) {
                     return $campusRepository
                         ->createQueryBuilder('c')

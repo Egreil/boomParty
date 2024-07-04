@@ -1,0 +1,65 @@
+{% extends 'participant/baseprofil.html.twig' %}
+{% block title %}
+    {% if participant.id == app.user.id %}
+        Mon profil
+    {% else %}
+        {{ participant.pseudo }}
+    {% endif %}
+{% endblock %}
+
+
+{% block photo %}
+    "{{ asset('images/profil/'~participant.image) }}" alt="image de profil de {{ participant.pseudo }}"
+{% endblock %}
+
+{#sur boostrap non tailwind css#}
+{% block infos %}
+    <div class="row justify-content-center">
+
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3 row align-items-center">
+                    <strong>Nom :</strong>{{ participant.nom }}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3 row align-items-center">
+                    <strong>Prenom :</strong>{{ participant.prenom }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3 row align-items-center">
+                    <strong>Pseudo :</strong>{{ participant.pseudo }}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3 row align-items-center">
+                    <strong>Email :</strong>{{ participant.email }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="mb-3 row align-items-center">
+                    <strong>Télephone :</strong>{{ participant.telephone }}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-3 row align-items-center">
+                    <strong>Campus :</strong>{{ participant.campus.nom }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 mt-4 d-flex justify-content-center">
+                <a href="{{ app.request.headers.get('referer')  }}" class="btn btn-danger">Retour</a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

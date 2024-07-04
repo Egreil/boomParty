@@ -6,6 +6,7 @@ use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
@@ -19,6 +20,12 @@ class SortieRepository extends ServiceEntityRepository
         //$this->security->getUser();
     }
 
+    public function findAll(): array
+    {
+        $sorties = $this->findAll();
+        return $sorties;
+    }
+
     public function findSorties(){
         return $this->createQueryBuilder('s')
             ->select('s', 'campus', 'lieu', 'etat', 'organisateur', 'participants')
@@ -30,6 +37,7 @@ class SortieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
 
     public function findSortiesAHistoriser()
     {
@@ -64,9 +72,9 @@ class SortieRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('s');
 
-        if ($data['Campus']) {
+        if ($data['campus']) {
             $qb->andWhere('s.campus = :campus')
-                ->setParameter('campus', $data['Campus']);
+                ->setParameter('campus', $data['campus']);
         }
 
         if ($data['nom']) {
@@ -133,5 +141,6 @@ class SortieRepository extends ServiceEntityRepository
         $result=$query->getResult();
         return $result;
     }
+
 
 }
