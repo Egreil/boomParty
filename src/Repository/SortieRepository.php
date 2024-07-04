@@ -65,9 +65,9 @@ class SortieRepository extends ServiceEntityRepository
 
 
     public function findSortiesByFilters($data,$user)
-    //$nom,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse,$user)
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->createQueryBuilder('s')
+                    ->leftJoin('s.etat', 'etat');
 
         if ($data['campus']) {
             $qb->andWhere('s.campus = :campus')
