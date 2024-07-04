@@ -29,10 +29,12 @@ class ParticipantController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher
     ): Response
     {
-        //$participant=$this->getUser();
 
         if($id){
             $participant=$participantRepository->find($id);
+            return $this->render('participant/details_personnel.html.twig', [
+                'participant' => $participant,
+            ]);
         }
         else{
             $participant= $this->getUser();

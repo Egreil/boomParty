@@ -1,76 +1,80 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h1 class="mb-4 text-center">Afficher une Sortie</h1>
-        <br>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <strong>Nom de la sortie :</strong> {{ sortie.nom ?? 'N/A' }}
-                </div>
-                <div class="mb-3">
-                    <strong>Date et heure de début :</strong> {{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date("Y-m-d H:i") : 'N/A' }}
-                </div>
-                <div class="mb-3">
-                    <strong>Date limite d'inscription :</strong> {{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date("Y-m-d") : 'N/A' }}
-                </div>
-                <div class="mb-3">
-                    <strong>Nombre de places :</strong> {{ sortie.nbInscriptionMax ?? 'N/A' }}
-                </div>
-                <div class="mb-3">
-                    <strong>Durée :</strong> {{ sortie.duree ?? 'N/A' }} minutes
-                </div>
-                <div class="mb-3">
-                    <strong>Description et infos :</strong> {{ sortie.infosSortie ?? 'N/A' }}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <strong>Campus :</strong> {{ sortie.campus ? sortie.campus.nom : 'N/A' }}
-                </div>
-                <div class="mb-3">
-                    <strong>Lieu :</strong> {{ sortie.lieu ? sortie.lieu.nom : 'N/A' }}
-                </div>
-                <div class="mb-3">
-                    <strong>Rue :</strong> {{ sortie.lieu ? sortie.lieu.rue : 'N/A' }}
-                </div>
-                <div class="mb-3">
-                    <strong>Code postal :</strong> {{ sortie.lieu ? sortie.lieu.ville.codePostal : 'N/A' }}
-                </div>
-                <div class="mb-3">
-                    <strong>Latitude :</strong> {{ sortie.lieu ? sortie.lieu.latitude : 'N/A' }}
-                </div>
-                <div class="mb-3">
-                    <strong>Longitude :</strong> {{ sortie.lieu ? sortie.lieu.longitude : 'N/A' }}
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="card mt-5 " style="max-width: 800px;">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <strong>Nom de la sortie :</strong> {{ sortie.nom ?? 'N/A' }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Date et heure de début :</strong> {{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date("Y-m-d H:i") : 'N/A' }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Date limite d'inscription :</strong> {{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date("Y-m-d") : 'N/A' }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Nombre de places :</strong> {{ sortie.nbInscriptionMax ?? 'N/A' }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Durée :</strong> {{ sortie.duree ?? 'N/A' }} minutes
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Description et infos :</strong> {{ sortie.infosSortie ?? 'N/A' }}
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <strong>Campus :</strong> {{ sortie.campus ? sortie.campus.nom : 'N/A' }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Lieu :</strong> {{ sortie.lieu ? sortie.lieu.nom : 'N/A' }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Rue :</strong> {{ sortie.lieu ? sortie.lieu.rue : 'N/A' }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Code postal :</strong> {{ sortie.lieu ? sortie.lieu.ville.codePostal : 'N/A' }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Latitude :</strong> {{ sortie.lieu ? sortie.lieu.latitude : 'N/A' }}
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Longitude :</strong> {{ sortie.lieu ? sortie.lieu.longitude : 'N/A' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-lg-12">
+                                <h3 class="">Participants inscrits :</h3>
+                                <div class="table-responsive" style="max-height: 200px; overflow-y: scroll;">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Pseudo</th>
+                                            <th>Nom</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for participant in sortie.participants %}
+                                            <tr>
+                                                <td><a href="{{ path('participant_details', {'id': participant.id}) }}">{{ participant.pseudo }}</a> </td>
+                                                <td>{{ participant.nom }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <h2 class="mt-5">Liste des participants inscrits :</h2>
-        <div class="table-responsive" style="max-height: 100px; overflow-y: scroll;">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Pseudo</th>
-                    <th>Nom</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for participant in sortie.participants %}
-                    <tr>
-                        <td>{{ participant.pseudo }}</td>
-                        <td>{{ participant.nom }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="mt-4">
-            <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-danger">Supprimer l'événement</a>
-            <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-primary">Modifier l'événement</a>
-            <a href="{{ path('sortie_list', {'id': sortie.id}) }}" class="btn btn-secondary">Retour à la liste</a>
-        </div>
     </div>
 {% endblock %}

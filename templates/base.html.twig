@@ -48,7 +48,6 @@
 
     <div class="container mt-2">
         <div class="logo-title-container">
-{#            <img src="{{ asset('images/Boomparty.png') }}" class="rounded-circle logo-img" alt="BoomParty">#}
             <div class="title-container">
                 <h1>
                     {% block titre %}
@@ -78,9 +77,9 @@
     {% endblock %}
 </main>
 
-<footer class="footer mt-auto">
+<footer class="footer mt-auto py-3 bg-light">
     <div class="container">
-        <p>&copy;BoomParty {{ 'now' | date('Y') }} Tous droits réservés.</p>
+        <span class="text-muted">&copy;BoomParty {{ 'now' | date('Y') }} Tous droits réservés.</span>
     </div>
 </footer>
 

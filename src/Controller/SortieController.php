@@ -102,17 +102,7 @@ class SortieController extends AbstractController
         if($filtreForm->isSubmitted()){
             // Récupérer les données filtrées
             $data = $filtreForm->getData();
-//            $campus = $data['Campus'] ?? null;
-//            $nom = $data['nom'] ?? '';
-//            $dateDebut = $data['dateDebut'] ?? null;
-//            $dateFin = $data['dateFin'] ?? null;
-//            $organisateur = $data['organisateur'] ?? false;
-//            $inscrit = $data['inscrit'] ?? false;
-//            $nonInscrit = $data['nonInscrit'] ?? false;
-//            $sortiePasse = $data['sortiePasse'] ?? false;
-            //dd($data);
             $sorties = $sortieRepository->findSortiesByFilters($data, $this->getUser());
-            //$nom,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse,$this->getUser());
 
         }else {
             // Si le formulaire n'est pas soumis, affichez toutes les sorties
