@@ -298,6 +298,12 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
 
+        //je vérifie que la date limite n'est pas atteinte
+        if (new \DateTime()>$sortie->getDateLimiteInscription()) {
+            $this->addFlash('error', 'Le date limite d\'inscriptions est passée pour cette sortie.');
+            return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
+        }
+
         // j'ajouter l'utilisateur à la sortie
         $sortie->addParticipant($participant);
         $entityManager->persist($sortie);
@@ -324,6 +330,11 @@ class SortieController extends AbstractController
         $participant = $security->getUser();
         if (!$participant instanceof Participant) {
             $this->addFlash('error', 'Vous devez être connecté(e) pour vous désinscrire d\'une sortie.');
+            return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
+        }
+        //je vérifie que la date limite n'est pas atteinte
+        if (new \DateTime()>$sortie->getDateHeureDebut()) {
+            $this->addFlash('error', 'L\'activitée est commencée, vous ne pouvez plus vous désinscrire');
             return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
 

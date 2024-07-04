@@ -26,7 +26,7 @@ class Sortie
 
 
     #[Assert\NotNull(message: "Veuillez saisir une date et heure de début !")]
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
 

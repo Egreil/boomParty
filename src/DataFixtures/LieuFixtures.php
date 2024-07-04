@@ -141,8 +141,8 @@ class LieuFixtures extends Fixture
         $sortie=new Sortie();
             $sortie->setNom($this->faker->word())
                 ->setNbInscriptionMax($this->faker->randomDigitNotNull())
-                ->setDateLimiteInscription(\DateTime::createFromFormat('d/m/Y', now("+2d")->format('d/m/Y')))
-                ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y', now("+3d")->format('d/m/Y')))
+                ->setDateLimiteInscription(\DateTime::createFromFormat('d/m/Y', now("+2 day")->format('d/m/Y')))
+                ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y', now("+3 day")->format('d/m/Y')))
                 ->setDuree(5)
                 ->setInfosSortie($this->faker->paragraph())
                 ->setLieu($this->faker->randomElement(
@@ -199,6 +199,37 @@ class LieuFixtures extends Fixture
             ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y',$lastmonth->format('d/m/y')))
             ->setEtat($manager->getRepository(Etat::class)->findOneBy(['libelle'=>'Annulée']));
         $manager->persist($sortie);
+        //ajoute une sortie disponible à l'inscription
+        $sortie= $this->newSortie($manager);
+        $sortie->setNom("A historiser Annulée")
+            ->setDateLimiteInscription( \DateTime::createFromFormat('d/m/Y',(new \DateTime('now+1month'))->format('d/m/y')))
+            ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y',(new \DateTime('now+2month'))->format('d/m/y')))
+            ->setDuree(300)
+            ->setEtat($manager->getRepository(Etat::class)->findOneBy(['libelle'=>'Ouverte']));
+        $manager->persist($sortie);
+        //ajout d'une sortie à passér "Activitée en Cours" à partir de Ouverte
+        $sortie= $this->newSortie($manager);
+        $sortie->setNom("A historiser Annulée")
+            ->setDateHeureDebut(new \DateTime())
+            ->setDuree(300)
+            ->setEtat($manager->getRepository(Etat::class)->findOneBy(['libelle'=>'Ouverte']));
+        $manager->persist($sortie);
+        //ajout d'une sortie à passér "Activitée en Cours" à partir de Cloturée
+        $sortie= $this->newSortie($manager);
+        $sortie->setNom("A historiser Annulée")
+            ->setDateHeureDebut(new \DateTime())
+            ->setDuree(300)
+            ->setEtat($manager->getRepository(Etat::class)->findOneBy(['libelle'=>'Cloturée']));
+        $manager->persist($sortie);
+
+        //ajout d'un sortie à passer en "Passée" à partir de "Activité en cours"
+        $sortie= $this->newSortie($manager);
+        $sortie->setNom("A historiser Annulée")
+            ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y',$lastmonth->format('d/m/y')))
+            ->setDuree(0)
+            ->setEtat($manager->getRepository(Etat::class)->findOneBy(['libelle'=>'Activité en cours']));
+        $manager->persist($sortie);
+
         // ajout des sorties à la BDD
         $manager->flush();
     }
