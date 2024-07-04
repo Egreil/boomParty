@@ -13,25 +13,21 @@
                     <strong>{{ form_label(form.nom) }}</strong>
                     {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.nom) }}
-
                 </div>
                 <div class="mb-3">
                     <strong>{{ form_label(form.dateHeureDebut) }}</strong>
                     {{ form_widget(form.dateHeureDebut, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.dateHeureDebut) }}
-
                 </div>
                 <div class="mb-3">
                     <strong>{{ form_label(form.dateLimiteInscription) }}</strong>
                     {{ form_widget(form.dateLimiteInscription, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.dateLimiteInscription) }}
-
                 </div>
                 <div class="mb-3">
                     <strong>{{ form_label(form.nbInscriptionMax) }}</strong>
                     {{ form_widget(form.nbInscriptionMax, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.nbInscriptionMax) }}
-
                 </div>
                 <div class="mb-3">
                     <strong>{{ form_label(form.duree) }}</strong>
@@ -41,7 +37,6 @@
                     </div>
                     {{ form_errors(form.duree) }}
                 </div>
-
                 <div class="mb-3">
                     <strong>{{ form_label(form.infosSortie) }}</strong>
                     {{ form_widget(form.infosSortie, {'attr': {'class': 'form-control'}}) }}
@@ -53,37 +48,59 @@
                     <strong>{{ form_label(form.campus) }}</strong>
                     {{ form_widget(form.campus, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.campus) }}
-
                 </div>
                 <div class="mb-3">
-                    <strong>{{ form_label(form.ville) }}</strong>
-                    {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.ville) }}
 
+                        <strong>{{ form_label(form.ville) }}</strong>
+                        {{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.ville) }}
+
+{#                    l ancien input pour l'appel de toutes les villes de France #}
+{#                    <strong>{{ form_label(form.ville) }}</strong>#}
+{#                    <select id="sortie_ville" name="{{ form.ville.vars.full_name }}" class="form-control">#}
+{#                        {% for ville in villesFrance %}#}
+{#                            <option value="{{ ville.code }}">{{ ville.nom }}</option>#}
+{#                        {% endfor %}#}
+{#                    </select>#}
+{#                    {{ form_errors(form.ville) }}#}
                 </div>
+
                 <div class="mb-3">
+
                     <strong>{{ form_label(form.lieu) }}</strong>
-                    {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+                    <div style="width: 300px; display: flex; align-items: center;">
+                        {{ form_widget(form.lieu, {'attr': {'class': 'form-control', 'id': 'lieu_nom'}}) }}
+                        <button type="button" class="btn btn-secondary" id="rechercher_adresse">🔍</button>
+                        <button type="button" class="rounded-circle black fw-bold btn btn-success"
+                                data-bs-toggle="modal" data-bs-target="#addLieuModal" style="margin-left: 10px;">
+                            +
+                        </button>
+                    </div>
                     {{ form_errors(form.lieu) }}
-
+{#                    ancien input pour la recherche d'un lieu via l'api#}
+{#                    <strong>{{ form_label(form.lieu) }}</strong>#}
+{#                    <div class="input-group" style="max-width: 400px;">#}
+{#                        <input type="text" id="lieu_nom" name="{{ form.lieu.vars.full_name }}" class="form-control">#}
+{#                        <button type="button" class="btn btn-secondary" id="rechercher_adresse">🔍</button>#}
+{#                        <button type="button" class="btn btn-success rounded-circle ms-3" style="width: 40px; height: 40px;" data-bs-toggle="modal" data-bs-target="#addLieuModal">+</button>#}
+{#                    </div>#}
+{#                    {{ form_errors(form.lieu) }}#}
                 </div>
+
                 <div class="mb-3">
                     <strong>{{ form_label(form.lieuRue) }}</strong>
                     {{ form_widget(form.lieuRue, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.lieuRue) }}
-
                 </div>
                 <div class="mb-3">
                     <strong>{{ form_label(form.villeCodePostal) }}</strong>
                     {{ form_widget(form.villeCodePostal, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.villeCodePostal) }}
-
                 </div>
                 <div class="mb-3">
                     <strong>{{ form_label(form.lieuLatitude) }}</strong>
                     {{ form_widget(form.lieuLatitude, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.lieuLatitude) }}
-
                 </div>
                 <div class="mb-3">
                     <strong>{{ form_label(form.lieuLongitude) }}</strong>
@@ -92,22 +109,131 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-12 d-flex justify-content-center">
-{#                {{ form_widget(form.enregistrer, {'attr': {'class': 'btn btn-primary mt-3 me-2'}}) }}#}
-{#                {{ form_widget(form.publier, {'attr': {'class': 'btn btn-success mt-3 me-2'}}) }}#}
-{#                {{ form_widget(form.annuler, {'attr': {'class': 'btn btn- mt-3'}}) }}#}
                 <div class="row">
                     <div class="col-md-12 d-flex justify-content-center">
-                        <button type="submit" name="action" value="enregistrer" class="btn btn-primary mt-3 me-2"> Enregistrer </button>
-                        <button type="submit" name="action" value="publier" class="btn btn-success mt-3 me-2"> Publier la sortie</button>
-                        <a href="{{ path('sortie_list')}}" class="btn btn-secondary mt-3"> Annuler </a>
+                        <button type="submit" name="action" value="enregistrer" class="btn btn-primary mt-3 me-2">Enregistrer</button>
+                        <button type="submit" name="action" value="publier" class="btn btn-success mt-3 me-2">Publier la sortie</button>
+                        <a href="{{ path('sortie_list') }}" class="btn btn-secondary mt-3">Annuler</a>
                     </div>
                 </div>
             </div>
         </div>
-
         {{ form_end(form) }}
     </div>
+
+    {# ma modal #}
+    <div class="modal fade" id="addLieuModal" tabindex="-1" aria-labelledby="addLieuModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addLieuModalLabel">Ajouter un nouveau lieu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(formLieu) }}
+                    <div class="mb-3">
+                        <div class="mb-3">
+                            <strong>{{ form_label(formLieu.ville) }}</strong>
+                            {{ form_widget(formLieu.ville, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(formLieu.ville) }}
+                        </div>
+{#                        // ancien code pour api#}
+{#                        <strong>{{ form_label(formLieu.ville) }}</strong>#}
+{#                        #}{# ici je recupere le nom de la ville selectionnée #}
+{#                        <input type="text" id="lieu_ville" name="{{ formLieu.ville.vars.full_name }}" class="form-control" readonly>#}
+{#                        {{ form_errors(formLieu.ville) }}#}
+                    </div>
+                    <div class="mb-3">
+                        <strong>{{ form_label(formLieu.nom) }}</strong>
+                        {{ form_widget(formLieu.nom, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(formLieu.nom) }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>{{ form_label(formLieu.rue) }}</strong>
+                        {{ form_widget(formLieu.rue, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(formLieu.rue) }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>{{ form_label(formLieu.latitude) }}</strong>
+                        {{ form_widget(formLieu.latitude, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(formLieu.latitude) }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>{{ form_label(formLieu.longitude) }}</strong>
+                        {{ form_widget(formLieu.longitude, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(formLieu.longitude) }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Enregistrer le lieu</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+
+                {{ form_end(formLieu) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extraJS %}
+    <script>
+
+            document.addEventListener('DOMContentLoaded', function() {
+            const villeSelect = document.getElementById('sortie_ville');
+            const popupVilleInput = document.getElementById('lieu_ville');
+
+            $('#addLieuModal').on('show.bs.modal', function () {
+            const selectedVille = villeSelect.options[villeSelect.selectedIndex].text.trim();
+
+            if (popupVilleInput) {
+            popupVilleInput.value = selectedVille;
+        }
+        });
+
+            // Optionnel : Réinitialiser la valeur de lieu_ville si le modal est fermé sans enregistrement
+            $('#addLieuModal').on('hidden.bs.modal', function () {
+            if (popupVilleInput) {
+            popupVilleInput.value = '';
+        }
+        });
+        });
+
+        // cette partie concerne l'appel api pour recuperer les coordonnes du lieu insérer
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const lieuInput = document.getElementById('lieu_nom');
+        //     const lieuLatitudeInput = document.getElementById('sortie_lieuLatitude');
+        //     const lieuLongitudeInput = document.getElementById('sortie_lieuLongitude');
+        //     const rechercherAdresseBtn = document.getElementById('rechercher_adresse');
+        //
+        //     // ne peu soumettre si je fait entree "lieu"
+        //     lieuInput.addEventListener('keydown', function(event) {
+        //         if (event.key === 'Enter') {
+        //             event.preventDefault();
+        //             rechercherAdresseBtn.click();
+        //         }
+        //     });
+        //
+        //     // je recupere les coord.
+        //     rechercherAdresseBtn.addEventListener('click', function() {
+        //         const lieuNom = lieuInput.value;
+        //
+        //         fetch(`/api/coords?lieu=${encodeURIComponent(lieuNom)}`)
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 if (data.latitude && data.longitude) {
+        //                     console.log(data)
+        //                     lieuLatitudeInput.value = data.latitude;
+        //                     lieuLongitudeInput.value = data.longitude;
+        //                 } else {
+        //                     console.error('Erreur : Impossible de récupérer les coordonnées du lieu');
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 console.error('Erreur lors de la récupération des coordonnées du lieu : ', error);
+        //             });
+        //     });
+        // });
+    </script>
 {% endblock %}

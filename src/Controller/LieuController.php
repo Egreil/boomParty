@@ -8,11 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 
-#[Route('/create', name:'create')]
+#[Route('/lieu', name:'create')]
 class LieuController extends AbstractController
 {
-
-    #[Route('/lieu', name: 'create')]
+    #[Route('/create', name: 'lieu_create')]
     public function create( LieuService $lieuService): Response
     {
         $nom ='Paris';
@@ -21,7 +20,7 @@ class LieuController extends AbstractController
         $longitude=2.3568;
 
         $lieu =$lieuService->createLieu($nom, $rue, $latitude,$longitude);
-        return $this->render('lieu/inscriptionFormulaire.html.twig', [
+        return $this->render('lieu/index.html.twig', [
             'controller_name' => 'LieuController',
             'lieu' => $lieu,
         ]);

@@ -46,10 +46,10 @@
                             <div class="col-lg-6">
                                 <div class="mb-3 row align-items-center">
                                     <div class="col-lg-4">
-                                        {{ form_label(filtreForm.dateFin) }}
+                                        {{ form_label(filtreForm.dateFin, null, {'label_attr': {'class': 'col-form-label custom-label-class'}}) }}
                                     </div>
                                     <div class="col-lg-8">
-                                        {{ form_widget(filtreForm.dateFin) }}
+                                        {{ form_widget(filtreForm.dateFin, {'attr': {'class': 'form-control'}}) }}
                                     </div>
                                 </div>
                             </div>

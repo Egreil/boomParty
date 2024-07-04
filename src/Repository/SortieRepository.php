@@ -16,7 +16,7 @@ class SortieRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Sortie::class);
-
+        //$this->security->getUser();
     }
 
     public function findSorties(){
@@ -35,6 +35,7 @@ class SortieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
     public function findSortiesAHistoriser()
     {
         //Option3: native query
@@ -64,9 +65,9 @@ class SortieRepository extends ServiceEntityRepository
 
 
     public function findSortiesByFilters($data,$user)
+    //$nom,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse,$user)
     {
-        $qb = $this->createQueryBuilder('s')
-                    ->leftJoin('s.etat', 'etat');
+        $qb = $this->createQueryBuilder('s');
 
         if ($data['campus']) {
             $qb->andWhere('s.campus = :campus')

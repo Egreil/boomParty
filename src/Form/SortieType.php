@@ -64,6 +64,17 @@ class SortieType extends AbstractType
                         ->orderBy('c.nom', 'ASC');
                 }
             ])
+            ->add('ville', EntityType::class, [
+                'class' => Ville::class,
+                'mapped'=>false,
+                'choice_label' => 'nom',
+                'attr' => ['class' => 'form-control'],
+                'query_builder' => function (VilleRepository $villeRepository) {
+                    return $villeRepository->createQueryBuilder('v')
+                        ->orderBy('v.nom', 'ASC');
+                }
+            ])
+
             ->add('lieu', EntityType::class, [
                 'class' => Lieu::class,
 //                'mapped' => false,
@@ -74,16 +85,6 @@ class SortieType extends AbstractType
                     return $lieuRepository->createQueryBuilder('l')
                         ->orderBy('l.nom', 'ASC');
                 }, 'required' => true,
-            ])
-            ->add('ville', EntityType::class, [
-                'class' => Ville::class,
-                'mapped'=>false,
-                'choice_label' => 'nom',
-                'attr' => ['class' => 'form-control'],
-                'query_builder' => function (VilleRepository $villeRepository) {
-                    return $villeRepository->createQueryBuilder('v')
-                        ->orderBy('v.nom', 'ASC');
-                }
             ])
 
 

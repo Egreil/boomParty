@@ -8,6 +8,7 @@ use App\Repository\ParticipantRepository;
 use App\Service\SauvegardeImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -57,9 +58,12 @@ class ParticipantController extends AbstractController
             }
 
             $file = $participantForm->get('image')->getData();
-            //dd($file);
             if($file !== null){
                 $newFilename = $fileUploader->RenomerImage($file, $this->getParameter('profil_image_directory'), $participant->getPseudo());
+                if($participant->getImage()){
+                    $fileSystem=new Filesystem();
+                    $fileSystem->remove($this->getParameter('profil_image_directory').'/'.$participant->getImage());
+                }
                 $participant->setImage($newFilename);
             }
 
