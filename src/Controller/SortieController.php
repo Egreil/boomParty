@@ -234,9 +234,9 @@ class SortieController extends AbstractController
             $this->addFlash('error', 'Le nombre maximum d\'inscriptions est atteint pour cette sortie.');
             return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
-
+        //dd(date_diff(new \DateTime(),$sortie->getDateLimiteInscription())->days);
         //je vérifie que la date limite n'est pas atteinte
-        if (new \DateTime()>$sortie->getDateLimiteInscription()) {
+        if ((date_diff(new \DateTime(),$sortie->getDateLimiteInscription()))->days<0) {
             $this->addFlash('error', 'Le date limite d\'inscriptions est passée pour cette sortie.');
             return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
@@ -270,6 +270,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
         }
         //je vérifie que la date limite n'est pas atteinte
+
         if (new \DateTime()>$sortie->getDateHeureDebut()) {
             $this->addFlash('error', 'L\'activitée est commencée, vous ne pouvez plus vous désinscrire');
             return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
