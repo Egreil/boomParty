@@ -6,7 +6,6 @@ use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
@@ -20,12 +19,6 @@ class SortieRepository extends ServiceEntityRepository
         //$this->security->getUser();
     }
 
-    public function findAll(): array
-    {
-        $sorties = $this->findAll();
-        return $sorties;
-    }
-
     public function findSorties(){
         return $this->createQueryBuilder('s')
             ->select('s', 'campus', 'lieu', 'etat', 'organisateur', 'participants')
@@ -34,10 +27,14 @@ class SortieRepository extends ServiceEntityRepository
             ->leftJoin('s.etat', 'etat')
             ->leftJoin('s.organisateur', 'organisateur')
             ->leftJoin('s.participants', 'participants')
+            ->where('etat.libelle NOT IN (:excludedStates)') // Exclure les états "historisée" et "annulée"
+            ->setParameter('excludedStates', ['Historisée', 'Annulée','Crée'])
+            //->andWhere('(etat.libelle = :etatCree AND organisateur = :user) OR organisateur = :user')  //Sélectionner les états "créé" et vérifier que l'utilisateur courant est l'organisateur
+           //->setParameter('etatCree', 'Créé')
+            //->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }
-
 
     public function findSortiesAHistoriser()
     {
@@ -68,9 +65,9 @@ class SortieRepository extends ServiceEntityRepository
 
 
     public function findSortiesByFilters($data,$user)
-    //$nom,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse,$user)
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->createQueryBuilder('s')
+                    ->leftJoin('s.etat', 'etat');
 
         if ($data['campus']) {
             $qb->andWhere('s.campus = :campus')
@@ -96,7 +93,14 @@ class SortieRepository extends ServiceEntityRepository
 
         if ($data['organisateur']) {
             $qb->andWhere('s.organisateur = :user')
-                ->setParameter('user', $user);
+                ->setParameter('user', $user)
+                ->andWhere('etat.libelle NOT IN (:excludedStates)') // Exclure les états "historisée" et "annulée"
+                ->setParameter('excludedStates', ['Historisée', 'Annulée',]);
+
+        }
+        else{
+            $qb->andWhere('etat.libelle NOT IN (:excludedStates)') // Exclure les états "historisée" et "annulée"
+            ->setParameter('excludedStates', ['Historisée', 'Annulée','Crée']);
         }
 
         if ($data['inscrit']) {
@@ -114,7 +118,8 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('now', new \DateTime());
         }
 
-        //dd($qb->getQuery()->getResult());
+
+
 
         return $qb->getQuery()->getResult();
     }
@@ -141,6 +146,5 @@ class SortieRepository extends ServiceEntityRepository
         $result=$query->getResult();
         return $result;
     }
-
 
 }
