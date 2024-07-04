@@ -6,6 +6,8 @@ use App\Service\LecteurFichierCSV;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use function PHPUnit\Framework\assertTrue;
 
 class LecteurFichierCSVTest extends KernelTestCase
@@ -20,9 +22,11 @@ class LecteurFichierCSVTest extends KernelTestCase
     public function testRecuperationDonneesCSV(){
         self::bootKernel();
         $em=static::getContainer()->get(EntityManagerInterface::class);
+        $mailer=static::getContainer()->get(MailerInterface::class);
+        $userPasswordHasher=static::getContainer()->get(UserPasswordHasherInterface::class);
         $filepath="./tests/DocumentDeTest/Classeur.csv";
         $lecteurFichierCSV= new LecteurFichierCSV();
-        $lecteurFichierCSV->lireFichierCSV($em,$filepath);
+        $lecteurFichierCSV->lireFichierCSV($em,$filepath,$mailer,$userPasswordHasher);
         assertTrue($filepath!=null);
     }
 
@@ -30,9 +34,10 @@ class LecteurFichierCSVTest extends KernelTestCase
         self::bootKernel();
         $em=static::getContainer()->get(EntityManagerInterface::class);
         $mailer=static::getContainer()->get(MailerInterface::class);
+        $userPasswordHasher=static::getContainer()->get(UserPasswordHasherInterface::class);
         $filepath="./tests/DocumentDeTest/Classeur.csv";
         $lecteurFichierCSV= new LecteurFichierCSV();
-        $lecteurFichierCSV->lireFichierCSV($em,$filepath,$mailer);
+        $lecteurFichierCSV->lireFichierCSV($em,$filepath,$mailer,$userPasswordHasher);
         assertTrue($filepath!=null);
 
 
