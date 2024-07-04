@@ -28,13 +28,13 @@ class ActualiserEtatService
         $etatHistorise=$em->getRepository(Etat::class)->findOneBy(['libelle'=>'Historisée']);
         $sortiesAHistoriser=$sortieRepository->findSortiesAHistoriser();
 
-//
-//        foreach($sortiesAHistoriser as $sortie){
+
+        foreach($sortiesAHistoriser as $sortie){
 //            var_dump($sortie->getNom());
 //            var_dump($sortie->getEtat()->getLibelle());
-//            $sortie->setEtat($etatHistorise);
-//            $em->persist($sortie);
-//        }
+            $sortie->setEtat($etatHistorise);
+            $em->persist($sortie);
+        }
         $em->flush();
 //        $sortiesAHistoriser=$sortieRepository->findSortiesAHistoriser();
 //        foreach($sortiesAHistoriser as $sortie) {
