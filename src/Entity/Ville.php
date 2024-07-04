@@ -6,6 +6,7 @@ use App\Repository\VilleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: VilleRepository::class)]
 class Ville
@@ -15,15 +16,18 @@ class Ville
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups('lieu')]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+    #[Groups('lieu')]
     #[ORM\Column(length: 255)]
     private ?string $codePostal = null;
 
     /**
      * @var Collection<int, Lieu>
      */
+
     #[ORM\OneToMany(targetEntity: Lieu::class, mappedBy: 'ville')]
     private Collection $lieux;
 
@@ -35,18 +39,6 @@ class Ville
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getIdVille(): ?int
-    {
-        return $this->idVille;
-    }
-
-    public function setIdVille(int $idVille): static
-    {
-        $this->idVille = $idVille;
-
-        return $this;
     }
 
     public function getNom(): ?string
@@ -101,6 +93,12 @@ class Ville
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        // TODO: Implement __toString() method.
+        return $this->getNom();
     }
 
 }

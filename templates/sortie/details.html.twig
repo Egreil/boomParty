@@ -30,6 +30,9 @@
                     <strong>Campus :</strong> {{ sortie.campus ? sortie.campus.nom : 'N/A' }}
                 </div>
                 <div class="mb-3">
+                    <strong>Ville :</strong> {{ sortie.lieu ? sortie.lieu.ville.nom : 'N/A' }}
+                </div>
+                <div class="mb-3">
                     <strong>Lieu :</strong> {{ sortie.lieu ? sortie.lieu.nom : 'N/A' }}
                 </div>
                 <div class="mb-3">
@@ -73,4 +76,11 @@
             <a href="{{ path('sortie_list', {'id': sortie.id}) }}" class="btn btn-secondary">Retour à la liste</a>
         </div>
     </div>
+
+{#    <div>#}
+{#        <h2 class="mt-5">Liste des villes :</h2>#}
+{#        {% for ville in villes %}#}
+{#            <div><i>{{ ville.nom }}</i></div>#}
+{#        {% endfor %}#}
+{#    </div>#}
 {% endblock %}

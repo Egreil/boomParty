@@ -8,11 +8,11 @@
             <div class="col-md-4 col-lg-4  offset-md-4 offset-lg-4 full-height center-form ">
                 <form method="post">
                     <form method="post">
-                        {% if error %}
-                            <div class="alert alert-danger">
-                                {{ error.messageKey|trans(error.messageData, 'security') }}
-                            </div>
-                        {% endif %}
+{#                        {% if error %}#}
+{#                            <div class="alert alert-danger">#}
+{#                                {{ error.messageKey|trans(error.messageData, 'security') }}#}
+{#                            </div>#}
+{#                        {% endif %}#}
 
                         {% if app.user %}
                             <div class="mb-3">

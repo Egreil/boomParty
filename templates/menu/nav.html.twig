@@ -47,6 +47,10 @@
 <div class="container d-flex justify-content-end mb-3">
     <div class="bg-light border p-2">
         <div><span>Date du jour : {{ "now"|date("d/m/Y") }}</span></div> <!-- Affiche la date du jour -->
-        <div><span>Participant : {{ app.user.nom }}</span></div> <!-- Affiche le nom de l'utilisateur connecté -->
+        {% if app.user %}
+            <div><span>Participant : {{ app.user.nom }}</span></div> <!-- Affiche le nom de l'utilisateur connecté -->
+        {% else %}
+            <div><span>Participant : Non connecté</span></div> <!-- Message si l'utilisateur n'est pas connecté -->
+        {% endif %}
     </div>
 </div>

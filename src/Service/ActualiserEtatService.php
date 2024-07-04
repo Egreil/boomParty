@@ -17,6 +17,18 @@ class ActualiserEtatService
     }
 
 
+    public function updateSortie() : void
+    {
+        $sorties=$this->sortieRepository->findAll();
+
+        foreach ($sorties as $sortie) {
+            $dateNow = new \DateTime();
+            $dateLimite=$sortie->getDateLimite();
+            $dateDebut=$sortie->getDateDebut();
+        }
+
+    }
+
     public function afficherSortiesAHistoriser(){
         return $this->sortieRepository->findSortiesAHistoriser();
     }

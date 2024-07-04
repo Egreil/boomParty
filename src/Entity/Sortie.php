@@ -21,17 +21,20 @@ class Sortie
     #[Assert\NotBlank(message: "Veuillez donner un nom à la sortie !")]
     #[Assert\Length(max: 250, maxMessage: "Vous avez dépassé le nombre de caractéres maximales 50 !")]
     #[ORM\Column(length: 255)]
+    #[Groups('lieu')]
     private ?string $nom = null;
 
 
     #[Assert\NotNull(message: "Veuillez saisir une date et heure de début !")]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeInterface $dateHeureDebut = null;
+
 
 
     #[Assert\NotNull(message: "Veuillez saisir une durée !")]
     #[Assert\Positive(message: "La durée doit être un nombre positif !")]
     #[ORM\Column]
+    #[Groups('lieu')]
     private ?int $duree = null;
 
     #[Assert\NotNull(message: "Veuillez saisir une date limite d'inscription !")]
