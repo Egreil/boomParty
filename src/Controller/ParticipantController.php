@@ -29,6 +29,7 @@ class ParticipantController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher
     ): Response
     {
+        //$participant=$this->getUser();
 
         if($id){
             $participant=$participantRepository->find($id);
