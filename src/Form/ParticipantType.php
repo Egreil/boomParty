@@ -2,9 +2,11 @@
 
 namespace App\Form;
 
+use App\Entity\Campus;
 use App\Entity\Participant;
-use App\Entity\Sortie;
-use Doctrine\DBAL\Types\TextType;
+use App\Repository\CampusRepository;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -13,8 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class ParticipantType extends AbstractType
 {
@@ -22,39 +24,54 @@ class ParticipantType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Email'
+                'label' => 'Email',
+                'attr' => ['class' => 'form-control'],
             ])
-            ->add('roles' ,)
-            ->add('password', PasswordType::class, [
-                'label' => 'Mot de passe',
-                'attr' => ['autocomplete' => 'new-password'],
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'attr' => ['class' => 'form-control'],
+                ],
+                'second_options' => [
+                    'label' => 'Confirmer mot de passe',
+                    'attr' => ['class' => 'form-control'],
+                ],
+                'invalid_message' => 'Les mots de passe doivent correspondre.',
+                'mapped' => false,
                 'constraints' => [
-                    new NotBlank(['message' => 'Veuillez saisir votre mot de passe']),
-                    new Length(['min' => 8,
-                        'minMessage'=> 'Votre mot de passe doit avoir au minimum {{limit}} charactéres',
+                    new Length([
+                        'min' => 4,
+                        'minMessage' => 'Votre mot de passe doit avoir au minimum {{ limit }} caractères',
                         'max' => 4096,
-                        ]),
-                ]])
+                    ]),
+                    new Regex([
+                        'pattern' => '/^[a-zA-Z0-9]+$/',
+                        'htmlPattern' => '[a-zA-Z0-9]+$',
+                        'message' => 'Votre mot de passe ne doit contenir que des lettres et des chiffres.',
+                    ]),
+                ],
+            ])
             ->add('nom', TextType::class, [
-                'label' => 'Nom'
+                'label' => 'Nom',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('prenom', TextType::class, [
-                'label' => 'Prenom'
+                'label' => 'Prenom',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('telephone', TextType::class, [
-                    'label'=>'Numéro de téléphone'
+                'label'=>'Numéro de téléphone',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('pseudo', TextType::class, [
-                'label' => 'Votre pseudo'
-            ])
-            ->add('dateCreation', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('dateModification', null, [
-                'widget' => 'single_text',
+                'label' => 'Votre pseudo',
+                'attr' => ['class' => 'form-control'],
             ])
             ->add('image', FileType::class, [
+                'required' => false,
                 'mapped' => false,
+                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new Image(
                         [
@@ -64,6 +81,17 @@ class ParticipantType extends AbstractType
                         ]
                     )
                 ]
+            ])
+            ->add('campus', EntityType::class, [
+                'class' => Campus::class,
+                'choice_label' => 'nom',
+                'attr' => ['class' => 'form-select'],
+                'query_builder' => function ( CampusRepository $campusRepository) {
+                    return $campusRepository
+                        ->createQueryBuilder('c')
+                        ->addOrderBy('c.nom');
+                }
+
             ])
         ;
     }

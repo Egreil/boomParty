@@ -33,6 +33,7 @@ class TestActualiserEtatService extends KernelTestCase
     }
 
     public function testHistoriser(){
+        //arrange
         var_dump('test Historiser');
         self::bootKernel();
         $em=static::getContainer()->get(EntityManagerInterface::class);
@@ -44,14 +45,17 @@ class TestActualiserEtatService extends KernelTestCase
             var_dump($sortie->getEtat()->getLibelle());
         }
         //$actualiserEtatService->historiser();
-        $historiser= new Historiser();
-        $historiser($em);
-        $em->clear();
+
+        //act
+        $historiser= new Historiser($em);
+        $historiser();
+        //assert
         $sorties=$actualiserEtatService->afficherSortiesAHistoriser();
         foreach($sorties as $sortie){
             var_dump($sortie->getNom());
             var_dump($sortie->getEtat()->getLibelle());
         }
+
         $this->assertEquals(0,count($sorties));
 
     }

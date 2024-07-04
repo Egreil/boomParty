@@ -34,23 +34,25 @@
                             <li><a class="dropdown-item" href="{{ path('villes_list') }}">Lister</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Inscrire partipant</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ path('admin_creerCompte') }}">Par formulaire</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_creerCompteCSV') }}">Par fichier CSV</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_participants_') }}">Liste des participants</a></li>
+                        </ul>
+                    </li>
                 {% endif %}
                 {% if app.user %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}">Se connecter</a>
                     </li>
                 {% endif %}
             </ul>
         </div>
     </div>
 </nav>
-<div class="container d-flex justify-content-end mb-3">
-    <div class="bg-light border p-2">
-        <div><span>Date du jour : {{ "now"|date("d/m/Y") }}</span></div> <!-- Affiche la date du jour -->
-        {% if app.user %}
-            <div><span>Participant : {{ app.user.nom }}</span></div> <!-- Affiche le nom de l'utilisateur connecté -->
-        {% else %}
-            <div><span>Participant : Non connecté</span></div> <!-- Message si l'utilisateur n'est pas connecté -->
-        {% endif %}
-    </div>
-</div>

@@ -1,60 +1,83 @@
-{% extends 'base.html.twig' %}
+{% extends 'participant/baseprofil.html.twig' %}
+{% block title %}
+        {% if participant.id == app.user.id %}
+            Mon profil
+            {% else %}
+                {{ participant.pseudo }}
+        {% endif %}
+{% endblock %}
 
-{% block title %}Détail des participants {% endblock %}
 
+{% block photo %}
+        "{{ asset('images/profil/'~participant.image) }}" alt="image de profil de {{ participant.pseudo }}"
+{% endblock %}
 
 {#sur boostrap non tailwind css#}
-{% block body %}
-    <div class="container py-4">
-        <div class="bg-white shadow rounded p-4">
-            <h1 class="h3 mb-4">Details</h1>
+{% block infos %}
+<div class="row justify-content-center">
+        {{ form_start(participantForm) }}
 
-            <div class="row mb-4">
-                <div class="col-12 col-md-6 mb-3 mb-md-0">
-                    <label class="form-label">Nom:</label>
-                    <div class="text-body">{{ participant.nom }}</div>
+        <div class="row">
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.nom) }}
+                        </div>
                 </div>
-
-                <div class="col-12 col-md-6 mb-3 mb-md-0">
-                    <label class="form-label">Prénom:</label>
-                    <div class="text-body">{{ participant.prenom }}</div>
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.prenom) }}
+                        </div>
                 </div>
-
-                <div class="col-12 col-md-6 mb-3 mb-md-0">
-                    <label class="form-label">Email:</label>
-                    <div class="text-body">{{ participant.email }}</div>
-                </div>
-
-                <div class="col-12 col-md-6 mb-3 mb-md-0">
-                    <label class="form-label">Téléphone:</label>
-                    <div class="text-body">{{ participant.telephone ?: 'N/A' }}</div>
-                </div>
-
-                <div class="col-12 col-md-6 mb-3 mb-md-0">
-                    <label class="form-label">Pseudo:</label>
-                    <div class="text-body">{{ participant.pseudo }}</div>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0">
-                    <label class="form-label">Date de Création:</label>
-                    <div class="text-body">{{ participant.dateCreation ? participant.dateCreation|date('Y-m-d H:i:s') : 'N/A' }}</div>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0">
-                    <label class="form-label">Date de Modification:</label>
-                    <div class="text-body">{{ participant.dateModification ? participant.dateModification|date('Y-m-d H:i:s') : 'N/A' }}</div>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0">
-                    <label class="form-label">Campus:</label>
-                    <div class="text-body">{{ participant.campus.nom }}</div>
-                </div>
-
-                <div class="col-12 mb-3 mb-md-0">
-                    <label class="form-label">Actif:</label>
-                    <div class="text-body">{{ participant.actif ? 'Oui' : 'Non' }}</div>
-                </div>
-            </div>
         </div>
-    </div>
+
+        <div class="row">
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.pseudo) }}
+                        </div>
+                </div>
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.email) }}
+                        </div>
+                </div>
+        </div>
+        <div class="row">
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.telephone) }}
+                        </div>
+                </div>
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.image) }}
+                        </div>
+                </div>
+        </div>
+        <div class="mb-3 d-flex justify-content-center align-items-center">
+                <div class="col-lg-6">
+                        {{ form_row(participantForm.campus) }}
+                </div>
+        </div>
+        <div class="row">
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.password.first) }}
+                        </div>
+                </div>
+                <div class="col-lg-6">
+                        <div class="mb-3 row align-items-center">
+                                {{ form_row(participantForm.password.second) }}
+                        </div>
+                </div>
+        </div>
+
+        <div class="mb-3 d-flex justify-content-center align-items-center">
+                <button type="submit" class="btn btn-primary">Modifier le Profil</button>
+        </div>
+
+
+        {{ form_end(participantForm) }}
+</div>
+
 {% endblock %}

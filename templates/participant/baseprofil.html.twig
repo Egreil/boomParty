@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block title %}{% endblock %}
+{% block titre %}{{ block('title') }}{% endblock %}
+{% block body %}
+<div class="container d-flex justify-content-center mt-5">
+    <div class="card col-lg-8">
+        {% if participant.image %}
+        <div class="justify-content-center d-flex">
+            <img src={% block photo %}{% endblock %}  class="img-fluid rounded-circle" style="width: 200px; height: 200px;" alt="...">
+        </div>
+        {% endif %}
+        <div class="card-body">
+            {% block infos %}{% endblock %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

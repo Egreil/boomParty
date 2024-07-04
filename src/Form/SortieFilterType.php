@@ -21,12 +21,12 @@ class SortieFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Campus', EntityType::class, [
+
+            ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'nom',
-//                'label_attr' => ['class' => 'custom-label-class'],
-                'attr' => ['class' => 'form-control'],
-                'placeholder' => 'Choisissez un campus',
+                'placeholder' => 'Choisir le campus',
+                'attr' => ['class' => 'form-select'],
                 'query_builder' => function ( CampusRepository $campusRepository) {
                     return $campusRepository
                         ->createQueryBuilder('c')
@@ -42,15 +42,11 @@ class SortieFilterType extends AbstractType
             ->add('dateDebut', DateType::class, [
                 'label' => 'Entre',
                 'widget' => 'single_text',
-                'html5' => true,
-                'mapped' => false,
                 'attr' => ['class' => 'form-control', 'type' => 'date'],
             ])
             ->add('dateFin', DateType::class, [
                 'label' => 'et',
                 'widget' => 'single_text',
-                'html5' => true,
-                'mapped' => false,
                 'attr' => ['class' => 'form-control', 'type' => 'date'],
             ])
 
@@ -63,21 +59,18 @@ class SortieFilterType extends AbstractType
             ->add('inscrit', CheckboxType::class, [
                 'label' => 'Sorties auxquelles je suis inscrit/e',
                 'required' => false,
-                'mapped' => false,
                 'attr' => ['class' => 'form-check-input'], // Ajoutez une classe pour le style Bootstrap
             ])
 
             ->add('nonInscrit', CheckboxType::class, [
                 'label' => 'Sorties auxquelles je ne suis pas inscrit/e',
                 'required' => false,
-                'mapped' => false,
                 'attr' => ['class' => 'form-check-input'], // Ajoutez une classe pour le style Bootstrap
             ])
 
             ->add('sortiePasse', CheckboxType::class, [
                 'label' => 'Sorties passées',
                 'required' => false,
-                'mapped' => false,
                 'attr' => ['class' => 'form-check-input'], // Ajoutez une classe pour le style Bootstrap
             ])
         ;
@@ -86,7 +79,6 @@ class SortieFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Sortie::class,
             'required' => false,
 
         ]);

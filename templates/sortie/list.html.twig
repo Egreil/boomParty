@@ -2,6 +2,14 @@
 
 {% block body %}
     <div class="container mt-5">
+        {% if app.user %}
+        <div class="container d-flex justify-content-end mb-3">
+            <div class="bg-light border p-2">
+                <div><span>Date du jour : {{ "now"|date("d/m/Y") }}</span></div> <!-- Affiche la date du jour -->
+                <div><span>Participant : {{ app.user.nom }}</span></div> <!-- Affiche le nom de l'utilisateur connecté -->
+            </div>
+        </div>
+        {% endif %}
         <div class="mb-3">
             <div class="bg-light border p-2">
                 {# Formulaire de tri #}
@@ -10,28 +18,28 @@
                     <div class="col-lg-6">
                          <div class="mb-3 row align-items-center">
                             <div class="col-lg-4">
-                                {{ form_label(filtreForm.Campus, null, {'label_attr': {'class': 'col-form-label'}}) }}
+                                {{ form_label(filtreForm.campus) }}
                             </div>
                             <div class="col-lg-8">
-                                {{ form_widget(filtreForm.Campus, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_widget(filtreForm.campus) }}
                             </div>
                         </div>
                         <div class="mb-3 row align-items-center">
                             <div class="col-lg-4">
-                                {{ form_label(filtreForm.nom, null, {'label_attr': {'class': 'col-form-label'}}) }}
+                                {{ form_label(filtreForm.nom) }}
                             </div>
                             <div class="col-lg-8">
-                                {{ form_widget(filtreForm.nom, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_widget(filtreForm.nom) }}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3 row align-items-center">
                                     <div class="col-lg-4">
-                                        {{ form_label(filtreForm.dateDebut, null, {'label_attr': {'class': 'col-form-label'}}) }}
+                                        {{ form_label(filtreForm.dateDebut) }}
                                     </div>
                                     <div class="col-lg-8">
-                                        {{ form_widget(filtreForm.dateDebut, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_widget(filtreForm.dateDebut) }}
                                     </div>
                                 </div>
                             </div>
@@ -105,29 +113,45 @@
                          </td>
                         <td>
                             {% set userParticipates = sortie.participants.contains(app.user) %}
+                            {% set maxParticipantsReached = sortie.participants|length >= sortie.nbInscriptionMax %}
+
                             {% if userParticipates %}
                                 <span class="badge bg-primary">Inscrit</span>
+                            {% elseif maxParticipantsReached %}
+                                <span class="badge bg-secondary">Complet</span>
                             {% endif %}
                         </td>
+
                         <td>{{ sortie.organisateur.nom }}</td>
                         <td>
-                            {% if sortie.organisateur.id == app.user.id %}
-                                <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Modifier</a>
-                                <a href="#" class="btn btn-sm btn-secondary">Publier</a>
+                            {% set userParticipates = sortie.participants.contains(app.user) %}
+                            {% set maxParticipantsReached = sortie.participants|length >= sortie.nbInscriptionMax %}
+                            {% set maxParticipantsAllowed = sortie.participants|length < sortie.nbInscriptionMax %}
+                            {% if app.user %}
+                                {% if sortie.organisateur.id == app.user.id %}
+                                    <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Modifier</a>
+                                    <a href="#" class="btn btn-sm btn-secondary">Publier</a>
+                                {% endif %}
                             {% endif %}
 
                             {% if userParticipates %}
                                 <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-sm btn-primary me-1">Afficher</a>
+
+                                {% if  maxParticipantsReached  or maxParticipantsAllowed %}
                                 <a href="{{ path('sortie_deinscrire', {'id': sortie.id}) }}" class="btn btn-sm btn-danger">Se désister</a>
-                            {% else %}
+                                {% endif %}
+
+                                 {% elseif  maxParticipantsAllowed %}
                                 <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-sm btn-success">S'inscrire</a>
-                            {% endif %}
+                                 {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
-        <a class="btn btn-primary mt-3 me-2" href="{{ path('sortie_create') }}">Ajouter une sortie</a>
+        {% if app.user %}
+            <a class="btn btn-primary mt-3 me-2" href="{{ path('sortie_create') }}">Ajouter une sortie</a>
+        {% endif %}
     </div>
 {% endblock %}

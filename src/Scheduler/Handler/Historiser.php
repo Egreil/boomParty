@@ -12,7 +12,8 @@ use Symfony\Component\Scheduler\Attribute\AsCronTask;
 /**
  * Service qui est invoqué par le scheduler pour Historiser les sorties.
  */
-#[AsCronTask('1 0 * * *',timezone:"EUROPE/PARIS")]
+//#[AsCronTask('1 0 * * *',timezone:"EUROPE/PARIS")]
+#[AsCronTask('*/1 */1 * * *',timezone:"EUROPE/PARIS")]
 final class Historiser
 {
     public function __construct (private EntityManagerInterface $entityManager) {

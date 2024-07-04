@@ -5,4 +5,37 @@
 {% endblock %}
 {% block body %}
     <h2>Liste des participants</h2>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prenom</th>
+                    <th>Pseudo</th>
+                    <th>Email</th>
+                    <th>Suprimer</th>
+                    <th>Désactiver</th>
+                </tr>
+            </thead>
+        {% for participant in participants %}
+            <tr>
+                <td>{{ participant.nom }}</td>
+                <td>{{ participant.prenom }}</td>
+                <td>{{ participant.pseudo }}</td>
+                <td>{{ participant.email }}</td>
+                <td><div>
+                        <a href="{{ path('admin_participants_delete', {'id': participant.id}) }}"> Supprimer
+                        </a>
+                    </div>
+                </td>
+                <td><div>
+                        <a href="{{ path('admin_participants_desactiver', {'id': participant.id}) }}">Desactiver
+                        </a>
+                    </div>
+                </td>
+            </tr>
+
+        {% endfor %}
+        </table>
+    </div>
 {% endblock %}
