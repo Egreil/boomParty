@@ -4,7 +4,7 @@ namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class HereGeocodingService
+class HereGeoCodingService
 {
     private $client;
     private $apiKey;
