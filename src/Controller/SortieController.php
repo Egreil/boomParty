@@ -30,7 +30,8 @@ class SortieController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         int $id = null,
-        SortieRepository $sortieRepository
+        SortieRepository $sortieRepository,
+        EtatRepository $etatRepository
     ): Response {
         if ($id) {
             $sortie = $sortieRepository->find($id);
@@ -55,6 +56,7 @@ class SortieController extends AbstractController
 
             if ($action === 'enregistrer') {
                 // Enregistrer la sortie sans la publier
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Crée']));
                 $entityManager->persist($sortie);
                 $entityManager->flush();
 
@@ -62,6 +64,7 @@ class SortieController extends AbstractController
 
             } elseif ($action === 'publier') {
                 // Publier la sortie si je click sur le bouton publier
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
                 $sortie->setDateHeureDebut(new \DateTime());
                 $sortie->setDateLimiteInscription(new \DateTime());
 
@@ -93,7 +96,6 @@ class SortieController extends AbstractController
         Request          $request,
     )
     {
-
         $filtreForm = $this->createForm(SortieFilterType::class);
 
         $filtreForm->handleRequest($request);
@@ -106,7 +108,7 @@ class SortieController extends AbstractController
 
         }else {
             // Si le formulaire n'est pas soumis, affichez toutes les sorties
-            $sorties = $sortieRepository->findSorties($request);
+            $sorties = $sortieRepository->findSorties();
         }
 
 

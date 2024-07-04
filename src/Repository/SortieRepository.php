@@ -16,7 +16,7 @@ class SortieRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Sortie::class);
-        //$this->security->getUser();
+
     }
 
     public function findSorties(){
@@ -27,10 +27,14 @@ class SortieRepository extends ServiceEntityRepository
             ->leftJoin('s.etat', 'etat')
             ->leftJoin('s.organisateur', 'organisateur')
             ->leftJoin('s.participants', 'participants')
+            ->where('etat.libelle NOT IN (:excludedStates)') // Exclure les états "historisée" et "annulée"
+            ->setParameter('excludedStates', ['Historisée', 'Annulée','Crée'])
+            //->andWhere('(etat.libelle = :etatCree AND organisateur = :user) OR organisateur = :user')  //Sélectionner les états "créé" et vérifier que l'utilisateur courant est l'organisateur
+           //->setParameter('etatCree', 'Créé')
+            //->setParameter('user', $user)
             ->getQuery()
             ->getResult();
     }
-
     public function findSortiesAHistoriser()
     {
         //Option3: native query
@@ -60,9 +64,9 @@ class SortieRepository extends ServiceEntityRepository
 
 
     public function findSortiesByFilters($data,$user)
-    //$nom,$campus, $dateDebut, $dateFin, $organisateur, $inscrit, $nonInscrit, $sortiePasse,$user)
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->createQueryBuilder('s')
+                    ->leftJoin('s.etat', 'etat');
 
         if ($data['campus']) {
             $qb->andWhere('s.campus = :campus')
@@ -88,7 +92,14 @@ class SortieRepository extends ServiceEntityRepository
 
         if ($data['organisateur']) {
             $qb->andWhere('s.organisateur = :user')
-                ->setParameter('user', $user);
+                ->setParameter('user', $user)
+                ->andWhere('etat.libelle NOT IN (:excludedStates)') // Exclure les états "historisée" et "annulée"
+                ->setParameter('excludedStates', ['Historisée', 'Annulée',]);
+
+        }
+        else{
+            $qb->andWhere('etat.libelle NOT IN (:excludedStates)') // Exclure les états "historisée" et "annulée"
+            ->setParameter('excludedStates', ['Historisée', 'Annulée','Crée']);
         }
 
         if ($data['inscrit']) {
@@ -106,7 +117,8 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('now', new \DateTime());
         }
 
-        //dd($qb->getQuery()->getResult());
+
+
 
         return $qb->getQuery()->getResult();
     }
