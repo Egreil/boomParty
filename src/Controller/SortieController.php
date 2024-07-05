@@ -57,7 +57,7 @@ class SortieController extends AbstractController
         $lieuForm->handleRequest($request);
 
         if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
-
+// cmt
             // normalement ici je dois recuperer les coordonnes du lieu
 //                $locations = $geoApiService->getLocationsByCity($lieu->getNom());
 //                $lieu->setRue($locations['rue']);
