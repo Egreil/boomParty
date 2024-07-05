@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Form\LieuType;
 use App\Form\SortieFilterType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
+use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
 use App\Service\InscriptionSortieService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +34,8 @@ class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         int $id = null,
         SortieRepository $sortieRepository,
-        EtatRepository $etatRepository
+        EtatRepository $etatRepository,
+        LieuRepository $lieuRepository
     ): Response {
         if ($id) {
             $sortie = $sortieRepository->find($id);
@@ -49,6 +53,42 @@ class SortieController extends AbstractController
         }
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
+        // mon formulaire Lieu
+        $lieu = new Lieu();
+        $lieuForm = $this->createForm(LieuType::class, $lieu);
+        $lieuForm->handleRequest($request);
+
+        if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
+// cmt
+            // normalement ici je dois recuperer les coordonnes du lieu
+//                $locations = $geoApiService->getLocationsByCity($lieu->getNom());
+//                $lieu->setRue($locations['rue']);
+//                $lieu->setLatitude($locations['latitude']);
+//                $lieu->setLongitude($locations['longitude']);
+
+            $entityManager->persist($lieu);
+            $entityManager->flush();
+
+
+            $this->addFlash('success', 'Le lieu ' . $lieu->getNom() . ' a été créé avec succès.');
+            return $this->redirectToRoute('sortie_create', ['lieu' => $lieu->getId()]);
+        }
+        // Si je choisi un lieu depuis ma liste déroulante
+        if ($request->query->has('lieuId')) {
+            $lieuId = $request->query->getInt('lieuId');
+            $lieu = $lieuRepository->find($lieuId);
+
+            if ($lieu) {
+                // Remplissage des coordonnées du lieu dans la sortie
+                $sortie->setLieu($lieu);
+                $sortie->setLieuRue($lieu->getRue());
+                $sortie->setLieuLatitude($lieu->getLatitude());
+                $sortie->setLieuLongitude($lieu->getLongitude());
+                $sortie->setLieuCodePostal($lieu->getVille()->getCodePostal());
+
+            }
+        }
+
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $user = $this->getUser();
@@ -88,6 +128,7 @@ class SortieController extends AbstractController
         return $this->render($template, [
             'sortie' => $sortie,
             'form' => $sortieForm->createView(),
+            'formLieu' => $lieuForm->createView(),
         ]);
     }
 
