@@ -188,12 +188,13 @@ class LieuFixtures extends Fixture
             ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y',$lastmonth->format('d/m/Y')))
             ->setEtat($manager->getRepository(Etat::class)->findOneBy(['libelle'=>'Historisée']));
         $manager->persist($sortie);
-        //1 mois dépasse et pas encore historisée
+        //1 mois dépassé Passée et pas encore historisée
         $sortie= $this->newSortie($manager);
         $sortie->setNom("A historiser")
             ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y',$lastmonth->format('d/m/Y')))
             ->setEtat($manager->getRepository(Etat::class)->findOneBy(['libelle'=>'Passée']));
         $manager->persist($sortie);
+        //1 mois dépassé Annulée et pas encore historisée
         $sortie= $this->newSortie($manager);
         $sortie->setNom("A historiser Annulée")
             ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y',$lastmonth->format('d/m/Y')))
@@ -201,7 +202,7 @@ class LieuFixtures extends Fixture
         $manager->persist($sortie);
         //ajoute une sortie disponible à l'inscription
         $sortie= $this->newSortie($manager);
-        $sortie->setNom("A historiser Annulée")
+        $sortie->setNom("Disponible inscription")
             ->setDateLimiteInscription( \DateTime::createFromFormat('d/m/Y',(new \DateTime('now+1month'))->format('d/m/Y')))
             ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y',(new \DateTime('now+2month'))->format('d/m/Y')))
             ->setDuree(300)
@@ -214,7 +215,7 @@ class LieuFixtures extends Fixture
             ->setDuree(300)
             ->setEtat($manager->getRepository(Etat::class)->findOneBy(['libelle'=>'Ouverte']));
         $manager->persist($sortie);
-        //ajout d'une sortie à passér "Activitée en Cours" à partir de Cloturée
+        //ajout d'une sortie à passer "Activitée en Cours" à partir de Cloturée
         $sortie= $this->newSortie($manager);
         $sortie->setNom("A historiser Annulée")
             ->setDateHeureDebut(new \DateTime())
@@ -224,7 +225,7 @@ class LieuFixtures extends Fixture
 
         //ajout d'un sortie à passer en "Passée" à partir de "Activité en cours"
         $sortie= $this->newSortie($manager);
-        $sortie->setNom("A historiser Annulée")
+        $sortie->setNom("InscriptionPossible, desinscritpion impossible")
             ->setDateHeureDebut(\DateTime::createFromFormat('d/m/Y',$lastmonth->format('d/m/Y')))
             ->setDuree(0)
             ->setEtat($manager->getRepository(Etat::class)->findOneBy(['libelle'=>'Activité en cours']));
