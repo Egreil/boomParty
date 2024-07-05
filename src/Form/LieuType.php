@@ -38,15 +38,15 @@ class LieuType extends AbstractType
             ])
             ->add('longitude', NumberType::class, [
                 'label' => 'Longitude'
-            ])
+            ]);
 //            ->add('ville', EntityType::class, [
 //                'class' => Ville::class,
 //                'choice_label' => 'nom',
 //            ])
-            ->add('enregistrer', SubmitType::class, [
-                'label' => 'Enregistrer',
-                'attr' => ['class' => 'btn btn-primary']
-            ]);
+//            ->add('enregistrer', SubmitType::class, [
+//                'label' => 'Enregistrer',
+//                'attr' => ['class' => 'btn btn-primary']
+//            ]);
     }
     public function configureOptions(OptionsResolver $resolver): void
     {
