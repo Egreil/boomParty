@@ -12,7 +12,7 @@ class LecteurFichierCSV
     public function lireFichierCSV(EntityManagerInterface $em,
                                    string $filepath,
                                    MailerInterface $mailer=null,
-                                   UserPasswordHasherInterface $userPasswordHasher
+                                   UserPasswordHasherInterface $userPasswordHasher,
     ){
         $inscriptionMailingService=new InscriptionMailingService();
         //Ourvrir le fichier
@@ -22,12 +22,11 @@ class LecteurFichierCSV
             }
             //Lire la ligne
             while (($datas=fgetcsv($stream))!=false){
+                //Ranger les données de la ligne
                 $data=$this->associerDonneeValeur($datas,$titre);
-                //var_dump($data);
-                $participant=$inscriptionMailingService->creationCompteVierge($em,$data,$mailer,null,$userPasswordHasher);
+                //Création du compte correspondant aux données de la ligne
+                $inscriptionMailingService->creationCompteVierge($em,$data,$mailer,null,$userPasswordHasher);
             }
-
-
         }
     }
 

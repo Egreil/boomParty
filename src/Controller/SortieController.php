@@ -44,7 +44,9 @@ class SortieController extends AbstractController
             $sortie = new Sortie();
             $isUpdate = false;
         }
-
+        if($sortie->getOrganisateur() && $sortie->getOrganisateur()!=$this->getUser()){
+            return $this->redirectToRoute('sortie_details', ['id' => $sortie->getId()]);
+        }
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
 

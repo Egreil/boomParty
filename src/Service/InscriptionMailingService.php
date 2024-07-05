@@ -16,10 +16,9 @@ class InscriptionMailingService
                                          array $datas=null,
                                          MailerInterface $mailer=null,
                                          Participant $participant=null,
-    UserPasswordHasherInterface $userPasswordHasher=null
+                    UserPasswordHasherInterface $userPasswordHasher=null
     ){
-        //var_dump($datas['Campus']);
-
+        //Creation du participant à partir des datas si les informations ne proviennent pas d'un formulaire
         if(!$participant && $datas){
             $campus=$em->getRepository(Campus::class)->findOneBy(['nom'=> $datas['Campus']]);
             $participant= new Participant();
@@ -28,20 +27,16 @@ class InscriptionMailingService
                 ->setEmail($datas['Mail'])
                 ->setCampus($campus)
                 ->setTelephone($datas['Telephone']);
-        }
+        }// Ajout des infomartions complémentaires et hashage du mot de passe
         if($userPasswordHasher){
             $this->initialiserParticipant($participant,$userPasswordHasher);
         }
-
-        //var_dump($participant);
+        // Insertion du nouveau participant dans la BDD et appel de l'envoie du mail
        if($mailer){
-
-           $this->envoyerMail($mailer,$participant);
            $em->persist($participant);
            $em->flush();
-
+           $this->envoyerMail($mailer,$participant);
        }
-        return $participant;
     }
 
     public function envoyerMail(MailerInterface $mailer,Participant $participant){
@@ -51,8 +46,6 @@ class InscriptionMailingService
                 ->subject("Rejoins ton BDE préféré!")
                 ->htmlTemplate('mailer/invitation.html.twig')
                 ->context([
-                    'expiration_date' => new \DateTime('+7 days'),
-                    'username' => 'foo',
                     'participant' => $participant
                 ]);
 
